@@ -1,11 +1,58 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import Layout from "../layouts/Layout.astro";
+import "../assets/global.css";
 ---
 
 <Layout>
-	<Welcome />
+  <div class="min-w-full h-full flex flex-col items-center justify-start py-8">
+    <div class="grid grid-cols-6 w-full max-w-4xl h-min p-8 gap-8">
+      <h1 class="flex flex-col text-2xl col-start-1 col-span-2 row-start-1">
+        <span>Creative</span>
+        <span>Technology</span>
+        <span class="flex gap-2">
+          <span class="text-red-700">Lab</span>
+          <span class="text-neutral-300">@ Cornell</span>
+        </span>
+      </h1>
+      <div class="bg-blue-500 h-full col-start-3 col-span-4 row-start-1"></div>
+      <p class="col-start-3 col-span-4 row-start-2">
+        We build exploratory projects that push the boundaries of <span
+          class="font-semibold">Artificial Intelligence</span
+        >, <span class="font-semibold">Digital Storytelling</span>, and <span
+          class="font-semibold">Extended Reality</span
+        >. Student directed since 2008.
+      </p>
+    </div>
+    <div class="grid grid-cols-6 w-full max-w-4xl h-min px-8 gap-8">
+      <h2
+        class="flex flex-col col-start-1 col-span-full w-full border-b border-neutral-300"
+      >
+        Projects
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-6 w-full max-w-4xl h-min p-8 gap-8">
+      <h3 class="flex flex-col text-2xl col-start-1 col-span-2 row-start-1">
+        Physics EM Wave
+      </h3>
+
+      <p class="h-full col-start-3 col-span-4 row-start-1">
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum illum
+        asperiores adipisci quae accusantium. Ipsa error, a aliquid vel odio
+        amet quisquam deserunt cum magni harum molestias expedita eius dolorem?
+      </p>
+
+      <div
+        class="h-96 col-start-3 col-span-4 row-start-2 bg-neutral-100 border border-neutral-300 rounded-lg flex flex-col gap-4 p-4"
+      >
+        <div class="h-full w-full bg-white shadow-md rounded-md"></div>
+        <div>
+          <button
+            class="px-4 py-1 bg-white rounded-sm border border-neutral-200"
+            >Open Project</button
+          >
+        </div>
+      </div>
+    </div>
+  </div>
 </Layout>
