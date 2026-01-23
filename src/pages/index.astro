@@ -5,29 +5,33 @@ import "../assets/global.css";
 ---
 
 <Layout>
-  <div class="min-w-full h-full flex flex-col items-center justify-start py-8">
-    <div class="grid grid-cols-6 w-full max-w-4xl h-min p-8 gap-8">
-      <h1 class="flex flex-col text-2xl col-start-1 col-span-2 row-start-1">
-        <span>Creative</span>
-        <span>Technology</span>
-        <span class="flex gap-2">
-          <span class="text-red-700">Lab</span>
-          <span class="text-neutral-300">@ Cornell</span>
-        </span>
-      </h1>
+  <div
+    class="min-w-full min-h-full flex flex-col items-center justify-start py-8 open-sans"
+  >
+    <div class="grid grid-cols-6 w-full max-w-4xl h-min py-8 gap-8">
+      <div class="flex col-start-1 col-span-2 row-start-1 h-32 items-end">
+        <h1 class="flex flex-col text-2xl eb-garamond">
+          <span>Creative</span>
+          <span>Technology</span>
+          <span class="flex gap-2">
+            <span class="text-red-700">Lab</span>
+            <span class="text-neutral-400">@Cornell</span>
+          </span>
+        </h1>
+      </div>
       <div class="bg-blue-500 h-full col-start-3 col-span-4 row-start-1"></div>
       <p class="col-start-3 col-span-4 row-start-2">
         We build exploratory projects that push the boundaries of <span
-          class="font-semibold">Artificial Intelligence</span
-        >, <span class="font-semibold">Digital Storytelling</span>, and <span
-          class="font-semibold">Extended Reality</span
+          class="font-bold">Artificial Intelligence</span
+        >, <span class="font-bold">Digital Storytelling</span>, and <span
+          class="font-bold">Extended Reality</span
         >. Student directed since 2008.
       </p>
     </div>
-    <div class="grid grid-cols-6 w-full max-w-4xl h-min px-8 gap-8">
-      <h2
-        class="flex flex-col col-start-1 col-span-full w-full border-b border-neutral-300"
-      >
+    <div
+      class="grid grid-cols-6 w-full max-w-4xl h-min border-b border-neutral-300"
+    >
+      <h2 class="flex flex-col col-start-1 col-span-full w-full kode-mono pb-2">
         Projects
       </h2>
     </div>
@@ -35,13 +39,26 @@ import "../assets/global.css";
       <Fragment slot="title">Physics EM Wave</Fragment>
       <Fragment slot="description">
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum illum
-        asperiores adipisci quae accusantium. Ipsa error, a aliquid vel odio
-        amet quisquam deserunt cum magni harum molestias expedita eius dolorem?
+        asperiores adipisci quae accusantium. Harum molestias dolorem?
       </Fragment>
       <Fragment slot="content"></Fragment>
       <Fragment slot="button">
         <button
-          class="px-4 py-1 bg-white rounded-sm border border-neutral-200"
+          class="px-6 py-1 bg-white rounded-sm border border-neutral-200 kode-mono text-sm"
+          >Open Project</button
+        >
+      </Fragment>
+    </ProjectSection>
+    <ProjectSection>
+      <Fragment slot="title">Kirby Engine</Fragment>
+      <Fragment slot="description">
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum illum
+        asperiores adipisci quae accusantium. Harum molestias dolorem?
+      </Fragment>
+      <Fragment slot="content"></Fragment>
+      <Fragment slot="button">
+        <button
+          class="px-6 py-2 bg-white rounded-sm border border-neutral-200 kode-mono text-sm"
           >Open Project</button
         >
       </Fragment>
