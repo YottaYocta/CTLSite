@@ -1,0 +1,23 @@
+---
+---
+
+<div class="grid grid-cols-6 w-full max-w-4xl h-min p-8 gap-8">
+  <h3 class="flex flex-col text-2xl col-start-1 col-span-2 row-start-1">
+    <slot name="title" />
+  </h3>
+
+  <p class="h-full col-start-3 col-span-4 row-start-1">
+    <slot name="description" />
+  </p>
+
+  <div
+    class="h-96 col-start-3 col-span-4 row-start-2 bg-neutral-100 border border-neutral-300 rounded-lg flex flex-col gap-4 p-4"
+  >
+    <div class="h-full w-full bg-white shadow-md rounded-md">
+      <slot name="content" />
+    </div>
+    <div>
+      <slot name="button" />
+    </div>
+  </div>
+</div>

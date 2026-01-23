@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import ProjectSection from "../components/ProjectSection.astro";
 import "../assets/global.css";
 ---
 
@@ -30,29 +31,20 @@ import "../assets/global.css";
         Projects
       </h2>
     </div>
-
-    <div class="grid grid-cols-6 w-full max-w-4xl h-min p-8 gap-8">
-      <h3 class="flex flex-col text-2xl col-start-1 col-span-2 row-start-1">
-        Physics EM Wave
-      </h3>
-
-      <p class="h-full col-start-3 col-span-4 row-start-1">
+    <ProjectSection>
+      <Fragment slot="title">Physics EM Wave</Fragment>
+      <Fragment slot="description">
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum illum
         asperiores adipisci quae accusantium. Ipsa error, a aliquid vel odio
         amet quisquam deserunt cum magni harum molestias expedita eius dolorem?
-      </p>
-
-      <div
-        class="h-96 col-start-3 col-span-4 row-start-2 bg-neutral-100 border border-neutral-300 rounded-lg flex flex-col gap-4 p-4"
-      >
-        <div class="h-full w-full bg-white shadow-md rounded-md"></div>
-        <div>
-          <button
-            class="px-4 py-1 bg-white rounded-sm border border-neutral-200"
-            >Open Project</button
-          >
-        </div>
-      </div>
-    </div>
+      </Fragment>
+      <Fragment slot="content"></Fragment>
+      <Fragment slot="button">
+        <button
+          class="px-4 py-1 bg-white rounded-sm border border-neutral-200"
+          >Open Project</button
+        >
+      </Fragment>
+    </ProjectSection>
   </div>
 </Layout>
