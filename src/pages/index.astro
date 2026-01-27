@@ -4,12 +4,19 @@ import ProjectSection from "../components/ProjectSection.astro";
 import "../assets/global.css";
 ---
 
+<script>
+  const heatmapBanner = document.getElementById("heatmap-banner");
+  heatmapBanner?.addEventListener("mousemove", () => {
+    console.log("move");
+  });
+</script>
+
 <Layout>
   <div
     class="min-w-full min-h-full flex flex-col items-center justify-start py-8 open-sans"
   >
     <div class="grid grid-cols-6 w-full max-w-4xl h-min py-8 gap-8">
-      <div class="flex col-start-1 col-span-2 row-start-1 h-32 items-end">
+      <div class="flex col-start-1 col-span-2 row-start-1 h-full items-end">
         <h1 class="flex flex-col text-2xl eb-garamond">
           <span>Creative</span>
           <span>Technology</span>
@@ -19,7 +26,11 @@ import "../assets/global.css";
           </span>
         </h1>
       </div>
-      <div class="bg-blue-500 h-full col-start-3 col-span-4 row-start-1"></div>
+      <canvas
+        class="bg-blue-500 h-full w-full col-start-3 col-span-4 row-start-1"
+        id="heatmap-banner"
+        width="500"
+        height="150"></canvas>
       <p class="col-start-3 col-span-4 row-start-2">
         We build exploratory projects that push the boundaries of <span
           class="font-bold">Artificial Intelligence</span
@@ -29,7 +40,7 @@ import "../assets/global.css";
       </p>
     </div>
     <div
-      class="grid grid-cols-6 w-full max-w-4xl h-min border-b border-neutral-300"
+      class="grid grid-cols-6 w-full max-w-4xl h-min border-b border-neutral-300 mt-4"
     >
       <h2 class="flex flex-col col-start-1 col-span-full w-full kode-mono pb-2">
         Projects
