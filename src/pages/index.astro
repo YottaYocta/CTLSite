@@ -8,41 +8,40 @@ import "../assets/global.css";
   const heatmapBanner = document.getElementById(
     "heatmap-banner",
   ) as HTMLCanvasElement;
-  const heatmapContext = heatmapBanner.getContext("2d");
+  const width = heatmapBanner.offsetWidth;
+  const height = heatmapBanner.offsetHeight;
+  heatmapBanner.width = width;
+  heatmapBanner.height = height;
 
-  heatmapBanner.width = heatmapBanner.offsetWidth;
-  heatmapBanner.height = heatmapBanner.offsetHeight;
+  const offscreen = document.createElement("canvas");
+  offscreen.width = width;
+  offscreen.height = height;
+  const ctx2d = offscreen.getContext("2d")!;
 
   type Dot = { x: number; y: number; radius: number };
-
   let dotList: Dot[] = [];
   const MAX_RADIUS = 20;
   const MIN_RADIUS = 15;
-  const MAX_DOTS = 20;
+  const MAX_DOTS = 30;
 
   const addDot = (newDot: Dot) => {
     dotList.push(newDot);
-    if (dotList.length > MAX_DOTS) {
-      dotList.shift();
-    }
+    if (dotList.length > MAX_DOTS) dotList.shift();
   };
 
   const tickDots = () => {
     dotList = dotList
-      .map((dot) => {
-        return {
-          ...dot,
-          radius:
-            dot.radius -
-            Math.max(0.01, Math.pow(2, (MAX_RADIUS - dot.radius) / 2) / 50),
-        };
-      })
+      .map((dot) => ({
+        ...dot,
+        radius:
+          dot.radius -
+          Math.max(0.01, Math.pow(2, (MAX_RADIUS - dot.radius) / 2) / 50),
+      }))
       .filter((dot) => dot.radius > 0);
   };
 
   const drawDots = (ctx: CanvasRenderingContext2D, dots: Dot[]) => {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-
     for (const dot of dots) {
       const intensity = Math.max(
         0,
@@ -51,16 +50,13 @@ import "../assets/global.css";
           Math.floor((255 * (MAX_RADIUS - dot.radius)) / MAX_RADIUS),
         ),
       );
-
       const hexVal = intensity.toString(16).padStart(2, "0");
-
       ctx.fillStyle = `#${hexVal}${hexVal}${hexVal}`;
-      const size = dot.radius * 2;
       ctx.fillRect(dot.x, dot.y, ctx.canvas.width, MAX_RADIUS);
     }
   };
 
-  heatmapBanner?.addEventListener("mousemove", (e) => {
+  heatmapBanner.addEventListener("mousemove", (e) => {
     addDot({
       x: e.offsetX,
       y: e.offsetY,
@@ -68,15 +64,132 @@ import "../assets/global.css";
     });
   });
 
-  if (heatmapContext) {
-    const drawAnimationFrame = () => {
-      tickDots();
-      drawDots(heatmapContext, dotList);
+  const gl = heatmapBanner.getContext("webgl", {
+    premultipliedAlpha: false,
+  })!;
 
-      requestAnimationFrame(drawAnimationFrame);
-    };
-    drawAnimationFrame();
+  function compileShader(type: number, source: string): WebGLShader {
+    const shader = gl.createShader(type)!;
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      throw new Error(gl.getShaderInfoLog(shader) ?? "Shader compile failed");
+    }
+    return shader;
   }
+
+  function linkProgram(vs: WebGLShader, fs: WebGLShader): WebGLProgram {
+    const prog = gl.createProgram()!;
+    gl.attachShader(prog, vs);
+    gl.attachShader(prog, fs);
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+      throw new Error(gl.getProgramInfoLog(prog) ?? "Program link failed");
+    }
+    return prog;
+  }
+
+  const vertSrc = `
+    attribute vec2 a_position;
+    varying vec2 v_uv;
+    void main() {
+      v_uv = a_position * 0.5 + 0.5;
+      gl_Position = vec4(a_position, 0.0, 1.0);
+    }`;
+
+  const noiseSrc = `
+    precision mediump float;
+    varying vec2 v_uv;
+    uniform sampler2D u_input;
+    uniform float u_time;
+    uniform vec2 u_resolution;
+
+    float hash(vec2 p) {
+      return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+    }
+    void main() {
+      vec2 uv = vec2(v_uv.x, 1.0 - v_uv.y);
+      vec4 color = texture2D(u_input, uv);
+      float n = hash(v_uv * u_resolution + u_time) * 0.15 - 0.075;
+      color.rgb += n;
+      gl_FragColor = vec4(color.rgb, 1.0);
+    }`;
+
+  const vert = compileShader(gl.VERTEX_SHADER, vertSrc);
+  const noiseProgram = linkProgram(
+    vert,
+    compileShader(gl.FRAGMENT_SHADER, noiseSrc),
+  );
+
+  const noise = {
+    a_position: gl.getAttribLocation(noiseProgram, "a_position"),
+    u_input: gl.getUniformLocation(noiseProgram, "u_input"),
+    u_time: gl.getUniformLocation(noiseProgram, "u_time"),
+    u_resolution: gl.getUniformLocation(noiseProgram, "u_resolution"),
+  };
+
+  const quadBuf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, quadBuf);
+  gl.bufferData(
+    gl.ARRAY_BUFFER,
+    new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]),
+    gl.STATIC_DRAW,
+  );
+
+  function drawQuad(posAttrib: number) {
+    gl.bindBuffer(gl.ARRAY_BUFFER, quadBuf);
+    gl.enableVertexAttribArray(posAttrib);
+    gl.vertexAttribPointer(posAttrib, 2, gl.FLOAT, false, 0, 0);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  }
+
+  function createTex(): WebGLTexture {
+    const tex = gl.createTexture()!;
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    return tex;
+  }
+
+  const heatmapTex = createTex();
+
+  let time = 0;
+
+  const render = () => {
+    time += 0.01;
+
+    tickDots();
+    drawDots(ctx2d, dotList);
+
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, heatmapTex);
+    gl.texImage2D(
+      gl.TEXTURE_2D,
+      0,
+      gl.RGBA,
+      gl.RGBA,
+      gl.UNSIGNED_BYTE,
+      offscreen,
+    );
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.viewport(0, 0, width, height);
+    gl.useProgram(noiseProgram);
+
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, heatmapTex);
+    gl.uniform1i(noise.u_input, 0);
+
+    gl.uniform1f(noise.u_time, time);
+    gl.uniform2f(noise.u_resolution, width, height);
+    drawQuad(noise.a_position);
+
+    requestAnimationFrame(render);
+  };
+
+  render();
 </script>
 
 <Layout>
@@ -98,7 +211,7 @@ import "../assets/global.css";
         class="border h-full w-full col-start-3 col-span-4 row-start-1"
         id="heatmap-banner"
         width="500"
-        height="150"></canvas>
+        height="100"></canvas>
       <p class="col-start-3 col-span-4 row-start-2">
         We build exploratory projects that push the boundaries of <span
           class="font-bold">Artificial Intelligence</span
