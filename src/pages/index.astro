@@ -5,10 +5,78 @@ import "../assets/global.css";
 ---
 
 <script>
-  const heatmapBanner = document.getElementById("heatmap-banner");
-  heatmapBanner?.addEventListener("mousemove", () => {
-    console.log("move");
+  const heatmapBanner = document.getElementById(
+    "heatmap-banner",
+  ) as HTMLCanvasElement;
+  const heatmapContext = heatmapBanner.getContext("2d");
+
+  heatmapBanner.width = heatmapBanner.offsetWidth;
+  heatmapBanner.height = heatmapBanner.offsetHeight;
+
+  type Dot = { x: number; y: number; radius: number };
+
+  let dotList: Dot[] = [];
+  const MAX_RADIUS = 20;
+  const MIN_RADIUS = 15;
+  const MAX_DOTS = 20;
+
+  const addDot = (newDot: Dot) => {
+    dotList.push(newDot);
+    if (dotList.length > MAX_DOTS) {
+      dotList.shift();
+    }
+  };
+
+  const tickDots = () => {
+    dotList = dotList
+      .map((dot) => {
+        return {
+          ...dot,
+          radius:
+            dot.radius -
+            Math.max(0.01, Math.pow(2, (MAX_RADIUS - dot.radius) / 2) / 50),
+        };
+      })
+      .filter((dot) => dot.radius > 0);
+  };
+
+  const drawDots = (ctx: CanvasRenderingContext2D, dots: Dot[]) => {
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+    for (const dot of dots) {
+      const intensity = Math.max(
+        0,
+        Math.min(
+          255,
+          Math.floor((255 * (MAX_RADIUS - dot.radius)) / MAX_RADIUS),
+        ),
+      );
+
+      const hexVal = intensity.toString(16).padStart(2, "0");
+
+      ctx.fillStyle = `#${hexVal}${hexVal}${hexVal}`;
+      const size = dot.radius * 2;
+      ctx.fillRect(dot.x, dot.y, ctx.canvas.width, MAX_RADIUS);
+    }
+  };
+
+  heatmapBanner?.addEventListener("mousemove", (e) => {
+    addDot({
+      x: e.offsetX,
+      y: e.offsetY,
+      radius: Math.random() * (MAX_RADIUS - MIN_RADIUS) + MIN_RADIUS,
+    });
   });
+
+  if (heatmapContext) {
+    const drawAnimationFrame = () => {
+      tickDots();
+      drawDots(heatmapContext, dotList);
+
+      requestAnimationFrame(drawAnimationFrame);
+    };
+    drawAnimationFrame();
+  }
 </script>
 
 <Layout>
@@ -27,7 +95,7 @@ import "../assets/global.css";
         </h1>
       </div>
       <canvas
-        class="bg-blue-500 h-full w-full col-start-3 col-span-4 row-start-1"
+        class="border h-full w-full col-start-3 col-span-4 row-start-1"
         id="heatmap-banner"
         width="500"
         height="150"></canvas>
