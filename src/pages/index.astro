@@ -69,7 +69,12 @@ import "../assets/global.css";
       );
       const hexVal = intensity.toString(16).padStart(2, "0");
       ctx.fillStyle = `#${hexVal}${hexVal}${hexVal}`;
-      ctx.fillRect(dot.x, dot.y, ctx.canvas.width, MAX_RADIUS);
+      ctx.fillRect(
+        dot.x - dot.radius,
+        dot.y - dot.radius,
+        dot.radius * 2,
+        dot.radius * 2,
+      );
     }
   };
 
