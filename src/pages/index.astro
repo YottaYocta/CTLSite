@@ -5,29 +5,18 @@ import "../assets/global.css";
 ---
 
 <script>
-  import {
-    Renderer,
-    Camera,
-    Transform,
-    Box,
-    Post,
-    Program,
-    Mesh,
-    Vec2,
-    Texture,
-    Triangle,
-    Color,
-  } from "ogl";
-
+  import * as twgl from "twgl.js";
   import vertex from "../shaders/passthrough.vert?raw";
   import fragment from "../shaders/source.frag?raw";
   import checkerFrag from "../shaders/checker.frag?raw";
 
   const heatmapBanner = document.getElementById(
     "heatmap-banner",
-  ) as HTMLDivElement;
+  ) as HTMLCanvasElement;
   const width = heatmapBanner.offsetWidth;
   const height = heatmapBanner.offsetHeight;
+  heatmapBanner.width = width;
+  heatmapBanner.height = height;
 
   const offscreen = document.createElement("canvas");
   offscreen.width = width;
@@ -88,68 +77,61 @@ import "../assets/global.css";
 
   // webgl stuff
 
-  const renderer = new Renderer();
-  const gl = renderer.gl;
-  heatmapBanner.appendChild(gl.canvas);
+  /**
+   *  create program that renders dither with tex input from quad render result
+   */
 
-  gl.canvas.width = width;
-  gl.canvas.height = height;
-  gl.canvas.classList.add("[image-rendering:pixelated]");
-  renderer.setSize(gl.canvas.width, gl.canvas.height);
+  const gl = heatmapBanner.getContext("webgl2")!;
+  gl.viewport(0, 0, width, height);
+  const baseQuadMesh = twgl.primitives.createXYQuadBufferInfo(gl); // reuse for every program
 
-  const scene = new Transform();
+  const baseProgramInfo = twgl.createProgramInfo(gl, [vertex, fragment]);
+  gl.useProgram(baseProgramInfo.program);
+  twgl.setBuffersAndAttributes(gl, baseProgramInfo, baseQuadMesh);
 
-  const geometry = new Triangle(gl);
+  const canvasTexture = twgl.createTexture(gl, { src: offscreen });
+  const baseUniforms = {
+    tSource: canvasTexture,
+  };
+  twgl.setUniforms(baseProgramInfo, baseUniforms);
 
-  const program = new Program(gl, {
-    vertex,
-    fragment,
-    uniforms: {
-      tSource: { value: new Texture(gl, { image: offscreen }) },
-    },
-  });
+  // draw base tex to FBO
 
-  const mesh = new Mesh(gl, { geometry, program });
-  mesh.setParent(scene);
+  const baseFBOInfo = twgl.createFramebufferInfo(gl);
+  twgl.bindFramebufferInfo(gl, baseFBOInfo);
+  twgl.drawBufferInfo(gl, baseQuadMesh);
 
-  const noise = new Post(gl, { width: width, height: height });
+  // use framebuffer as uniform for dither shader
 
-  // prettier-ignore
-  const bayerData = new Uint8Array([
-      0, 128,  32, 160,   8, 136,  40, 168,
-    192,  64, 224,  96, 200,  72, 232, 104,
-     48, 176,  16, 144,  56, 184,  24, 152,
-    240, 112, 208,  80, 248, 120, 216,  88,
-     12, 140,  44, 172,   4, 132,  36, 164,
-    204,  76, 236, 108, 196,  68, 228, 100,
-     60, 188,  28, 156,  52, 180,  20, 148,
-    252, 124, 220,  92, 244, 116, 212,  84,
-  ]);
+  const ditherProgramInfo = twgl.createProgramInfo(gl, [vertex, checkerFrag]);
+  gl.useProgram(ditherProgramInfo.program);
+  twgl.setBuffersAndAttributes(gl, ditherProgramInfo, baseQuadMesh);
 
-  const bayerTexture = new Texture(gl, {
-    image: bayerData,
+  const ditherTexture = twgl.createTexture(gl, {
     width: 8,
     height: 8,
-    generateMipmaps: false,
-    minFilter: gl.NEAREST,
-    magFilter: gl.NEAREST,
     wrapS: gl.REPEAT,
     wrapT: gl.REPEAT,
     internalFormat: gl.LUMINANCE,
     format: gl.LUMINANCE,
+    src: new Uint8Array([
+      0, 128, 32, 160, 8, 136, 40, 168, 192, 64, 224, 96, 200, 72, 232, 104, 48,
+      176, 16, 144, 56, 184, 24, 152, 240, 112, 208, 80, 248, 120, 216, 88, 12,
+      140, 44, 172, 4, 132, 36, 164, 204, 76, 236, 108, 196, 68, 228, 100, 60,
+      188, 28, 156, 52, 180, 20, 148, 252, 124, 220, 92, 244, 116, 212, 84,
+    ]),
   });
+  const ditherUniforms = {
+    tSource: baseFBOInfo,
+    tBayer: ditherTexture,
+    uTime: 0,
+    uResolution: [width, height],
+    uDitherSize: 4,
+    uNumColors: 2,
+    uIntensity: 0.5,
+  };
 
-  noise.addPass({
-    fragment: checkerFrag,
-    uniforms: {
-      uTime: { value: 0 },
-      uResolution: { value: new Vec2(width, height) },
-      uDitherSize: { value: 4 },
-      uNumColors: { value: 2 },
-      uIntensity: { value: 0.5 },
-      tBayer: { value: bayerTexture },
-    },
-  });
+  twgl.setUniforms(ditherProgramInfo, ditherUniforms);
 
   let time = 0;
   const render = () => {
@@ -158,9 +140,27 @@ import "../assets/global.css";
     tickDots();
     drawDots(ctx2d, dotList);
 
-    program.uniforms.tSource.value = new Texture(gl, { image: offscreen });
-    noise.passes[0].uniforms.uTime.value = time;
-    noise.render({ scene: mesh });
+    // render base to fbo
+
+    gl.useProgram(baseProgramInfo.program);
+    twgl.setTextureFromElement(gl, canvasTexture, offscreen);
+    const newBaseUniforms = {
+      tSource: canvasTexture,
+    };
+    twgl.setUniforms(baseProgramInfo, newBaseUniforms);
+    twgl.bindFramebufferInfo(gl, baseFBOInfo);
+    twgl.setBuffersAndAttributes(gl, baseProgramInfo, baseQuadMesh);
+    twgl.drawBufferInfo(gl, baseQuadMesh);
+
+    // render dither with updated texture
+    gl.useProgram(ditherProgramInfo.program);
+    twgl.bindFramebufferInfo(gl, null);
+    const changedUniforms = {
+      uTime: time,
+      uSource: baseFBOInfo,
+    };
+    twgl.setUniforms(ditherProgramInfo, changedUniforms);
+    twgl.drawBufferInfo(gl, baseQuadMesh);
 
     requestAnimationFrame(render);
   };
@@ -183,15 +183,11 @@ import "../assets/global.css";
           </span>
         </h1>
       </div>
-      <div
+      <canvas
         class="relative overflow-clip h-32 w-full col-start-3 col-span-4 row-start-1"
         id="heatmap-banner"
       >
-        <div
-          class="absolute inset-0 z-10 pointer-events-none bg-linear-to-r from-transparent to-white"
-        >
-        </div>
-      </div>
+      </canvas>
       <p class="col-start-3 col-span-4 row-start-2">
         We build exploratory projects that push the boundaries of <span
           class="font-bold">Artificial Intelligence</span

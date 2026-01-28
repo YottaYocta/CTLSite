@@ -20,6 +20,9 @@ importers:
       tailwindcss:
         specifier: ^4.1.18
         version: 4.1.18
+      twgl.js:
+        specifier: ^7.0.0
+        version: 7.0.0
 
 packages:
 
@@ -1463,6 +1466,9 @@ packages:
 
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
+
+  twgl.js@7.0.0:
+    resolution: {integrity: sha512-9HHZ8emdZb2nKPU0FDIGDlkp6AD9rWFv7ThqdbmUqyBhD3WTQpLN+89w4B+YshGwD1fL6PMVpVKZqC0pikgmcA==}
 
   type-fest@4.41.0:
     resolution: {integrity: sha512-TeTSQ6H5YHvpqVwBRcnLDCBnDOHWYu7IvGbHT6N8AOymcr9PJGjc1GTtiWZTYg0NCgYwvnYWEkVChQAr9bjfwA==}
@@ -3343,6 +3349,8 @@ snapshots:
 
   tslib@2.8.1:
     optional: true
+
+  twgl.js@7.0.0: {}
 
   type-fest@4.41.0: {}
 

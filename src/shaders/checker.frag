@@ -2,7 +2,7 @@ precision mediump float;
 
 varying vec2 vUv;
 
-uniform sampler2D tMap;
+uniform sampler2D tSource;
 uniform sampler2D tBayer;
 uniform float uTime;
 uniform vec2 uResolution;
@@ -24,7 +24,7 @@ void main() {
 
     vec2 sampleUv = (cell * uDitherSize + 0.5) / uResolution;
     sampleUv = vec2(sampleUv.x, 1.0 - sampleUv.y);
-    vec4 color = texture2D(tMap, sampleUv);
+    vec4 color = texture2D(tSource, sampleUv);
 
     vec2 bayerUv = mod(cell, 8.0) / 8.0;
     float threshold = texture2D(tBayer, bayerUv).r;
