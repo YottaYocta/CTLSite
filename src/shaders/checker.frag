@@ -3,23 +3,33 @@ precision mediump float;
 varying vec2 vUv;
 
 uniform sampler2D tMap;
+uniform sampler2D tBayer;
 uniform float uTime;
 uniform vec2 uResolution;
+uniform float uDitherSize;
+uniform int uNumColors;
+uniform float uIntensity;
 
-float hash(vec2 p) {
-    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+vec3 dither(vec3 color, float threshold) {
+    float nColors = float(uNumColors);
+    float offset = (threshold - 0.5) * uIntensity / (nColors - 1.0);
+    return floor((color + offset) * (nColors - 1.0) + 0.5) / (nColors - 1.0);
 }
 
 void main() {
-    vec2 uv = vec2(vUv.x, 1.0 - vUv.y);
+    vec2 uv = vec2(vUv.x, vUv.y);
 
     vec2 pixel = uv * uResolution;
+    vec2 cell = floor(pixel / uDitherSize);
 
-    float checker = mod(floor(pixel.x) + floor(pixel.y), 2.0);
+    vec2 sampleUv = (cell * uDitherSize + 0.5) / uResolution;
+    sampleUv = vec2(sampleUv.x, 1.0 - sampleUv.y);
+    vec4 color = texture2D(tMap, sampleUv);
 
-    vec4 color = texture2D(tMap, uv);
+    vec2 bayerUv = mod(cell, 8.0) / 8.0;
+    float threshold = texture2D(tBayer, bayerUv).r;
 
-    color.rgb *= checker;
+    color.rgb = dither(color.rgb, threshold);
 
     gl_FragColor = vec4(color.rgb, 1.0);
 }
