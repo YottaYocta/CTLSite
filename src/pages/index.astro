@@ -25,8 +25,8 @@ import "../assets/global.css";
 
   type Dot = { x: number; y: number; radius: number };
   let dotList: Dot[] = [];
-  const MAX_RADIUS = 20;
-  const MIN_RADIUS = 15;
+  const MAX_RADIUS = 40;
+  const MIN_RADIUS = 30;
   const MAX_DOTS = 30;
 
   const addDot = (newDot: Dot) => {
@@ -40,7 +40,7 @@ import "../assets/global.css";
         ...dot,
         radius:
           dot.radius -
-          Math.max(0.01, Math.pow(2, (MAX_RADIUS - dot.radius) / 2) / 50),
+          Math.max(0.01, Math.pow(2, (MAX_RADIUS - dot.radius) / 4) / 50),
       }))
       .filter((dot) => dot.radius > 0);
   };
@@ -57,13 +57,10 @@ import "../assets/global.css";
         ),
       );
       const hexVal = intensity.toString(16).padStart(2, "0");
-      ctx.fillStyle = `#${hexVal}${hexVal}${hexVal}`;
-      ctx.fillRect(
-        dot.x - dot.radius,
-        dot.y - dot.radius,
-        dot.radius * 2,
-        dot.radius * 2,
-      );
+      ctx.fillStyle = `#${"ff"}${hexVal}${hexVal}`;
+      ctx.beginPath();
+      ctx.ellipse(dot.x, dot.y, dot.radius, dot.radius, 0, 0, Math.PI * 2);
+      ctx.fill();
     }
   };
 
@@ -95,11 +92,7 @@ import "../assets/global.css";
   };
   twgl.setUniforms(baseProgramInfo, baseUniforms);
 
-  // draw base tex to FBO
-
   const baseFBOInfo = twgl.createFramebufferInfo(gl);
-  twgl.bindFramebufferInfo(gl, baseFBOInfo);
-  twgl.drawBufferInfo(gl, baseQuadMesh);
 
   // use framebuffer as uniform for dither shader
 
@@ -114,6 +107,7 @@ import "../assets/global.css";
     wrapT: gl.REPEAT,
     internalFormat: gl.LUMINANCE,
     format: gl.LUMINANCE,
+    minMag: gl.NEAREST,
     src: new Uint8Array([
       0, 128, 32, 160, 8, 136, 40, 168, 192, 64, 224, 96, 200, 72, 232, 104, 48,
       176, 16, 144, 56, 184, 24, 152, 240, 112, 208, 80, 248, 120, 216, 88, 12,
@@ -126,9 +120,9 @@ import "../assets/global.css";
     tBayer: ditherTexture,
     uTime: 0,
     uResolution: [width, height],
-    uDitherSize: 4,
-    uNumColors: 2,
-    uIntensity: 0.5,
+    uDitherSize: 2,
+    uNumColors: 3,
+    uIntensity: 1,
   };
 
   twgl.setUniforms(ditherProgramInfo, ditherUniforms);
@@ -148,18 +142,22 @@ import "../assets/global.css";
       tSource: canvasTexture,
     };
     twgl.setUniforms(baseProgramInfo, newBaseUniforms);
-    twgl.bindFramebufferInfo(gl, baseFBOInfo);
     twgl.setBuffersAndAttributes(gl, baseProgramInfo, baseQuadMesh);
+
+    twgl.bindFramebufferInfo(gl, baseFBOInfo);
     twgl.drawBufferInfo(gl, baseQuadMesh);
+    twgl.bindFramebufferInfo(gl, null);
 
     // render dither with updated texture
     gl.useProgram(ditherProgramInfo.program);
     twgl.bindFramebufferInfo(gl, null);
     const changedUniforms = {
       uTime: time,
-      uSource: baseFBOInfo,
+      tSource: baseFBOInfo.attachments[0],
+      tBayer: ditherTexture,
     };
     twgl.setUniforms(ditherProgramInfo, changedUniforms);
+    twgl.setBuffersAndAttributes(gl, ditherProgramInfo, baseQuadMesh);
     twgl.drawBufferInfo(gl, baseQuadMesh);
 
     requestAnimationFrame(render);
@@ -184,7 +182,7 @@ import "../assets/global.css";
         </h1>
       </div>
       <canvas
-        class="relative overflow-clip h-32 w-full col-start-3 col-span-4 row-start-1"
+        class="relative overflow-clip h-32 w-full col-start-3 col-span-4 row-start-1 [image-rendering:pixelated]"
         id="heatmap-banner"
       >
       </canvas>
