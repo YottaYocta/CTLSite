@@ -17,7 +17,7 @@ vec3 dither(vec3 color, float threshold) {
 }
 
 void main() {
-    vec2 uv = vec2(vUv.x, vUv.y);
+    vec2 uv = vec2(vUv.x, 1.0-vUv.y);
 
     vec2 pixel = uv * uResolution;
     vec2 cell = floor(pixel / uDitherSize);

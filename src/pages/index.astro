@@ -27,16 +27,17 @@ import "../assets/global.css";
   type Rect = { x: number; y: number; shade: number };
 
   let dotList: Dot[] = [];
-  const MAX_RADIUS = 40;
-  const MIN_RADIUS = 30;
-  const MAX_DOTS = 30;
+  const MAX_RADIUS = 30;
+  const MIN_RADIUS = 28;
+  const MAX_DOTS = 100;
 
-  const NUM_RECTS = 6;
+  const NUM_RECTS = 10;
+  const MIN_RECT_HEIGHT = 24;
   const rectList: Rect[] = [];
   for (let i = 0; i < NUM_RECTS; i++) {
     rectList.push({
       x: 0,
-      y: Math.floor(i * 32 + Math.random() * 16),
+      y: Math.floor(i * MIN_RECT_HEIGHT + Math.random() * 16),
       shade: Math.random(),
     });
   }
@@ -72,7 +73,8 @@ import "../assets/global.css";
         ),
       );
       const hexVal = intensity.toString(16).padStart(2, "0");
-      ctx.fillStyle = `#${hexVal}${hexVal}${hexVal}`;
+      const inverseHex = (255 - intensity).toString(16).padStart(2, "0");
+      ctx.fillStyle = `#${hexVal}${hexVal}${hexVal}${inverseHex}`;
       ctx.beginPath();
       ctx.ellipse(dot.x, dot.y, dot.radius, dot.radius, 0, 0, Math.PI * 2);
       ctx.fill();
@@ -85,7 +87,7 @@ import "../assets/global.css";
         .toString(16)
         .padStart(2, "0");
       ctx.fillStyle = `#${hexVal}${hexVal}${hexVal}`;
-      ctx.fillRect(rect.x, rect.y, width, 32 + 32 * rect.shade);
+      ctx.fillRect(rect.x, rect.y, width, MIN_RECT_HEIGHT + 32 * rect.shade);
     }
   };
 
@@ -146,7 +148,7 @@ import "../assets/global.css";
     tBayer: ditherTexture,
     uTime: 0,
     uResolution: [width, height],
-    uDitherSize: 4,
+    uDitherSize: 2,
     uNumColors: 2,
     uIntensity: 1,
   };
@@ -181,21 +183,21 @@ import "../assets/global.css";
     twgl.setUniforms(baseProgramInfo, newBaseUniforms);
     twgl.setBuffersAndAttributes(gl, baseProgramInfo, baseQuadMesh);
 
-    // twgl.bindFramebufferInfo(gl, baseFBOInfo);
-    twgl.bindFramebufferInfo(gl, null);
+    twgl.bindFramebufferInfo(gl, baseFBOInfo);
     twgl.drawBufferInfo(gl, baseQuadMesh);
+    twgl.bindFramebufferInfo(gl, null);
 
     // render dither with updated texture
-    // gl.useProgram(ditherProgramInfo.program);
-    // twgl.bindFramebufferInfo(gl, null);
-    // const changedUniforms = {
-    //   uTime: time,
-    //   tSource: baseFBOInfo.attachments[0],
-    //   tBayer: ditherTexture,
-    // };
-    // twgl.setUniforms(ditherProgramInfo, changedUniforms);
-    // twgl.setBuffersAndAttributes(gl, ditherProgramInfo, baseQuadMesh);
-    // twgl.drawBufferInfo(gl, baseQuadMesh);
+    gl.useProgram(ditherProgramInfo.program);
+    twgl.bindFramebufferInfo(gl, null);
+    const changedUniforms = {
+      uTime: time,
+      tSource: baseFBOInfo.attachments[0],
+      tBayer: ditherTexture,
+    };
+    twgl.setUniforms(ditherProgramInfo, changedUniforms);
+    twgl.setBuffersAndAttributes(gl, ditherProgramInfo, baseQuadMesh);
+    twgl.drawBufferInfo(gl, baseQuadMesh);
 
     requestAnimationFrame(render);
   };
