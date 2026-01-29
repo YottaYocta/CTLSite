@@ -13,8 +13,8 @@ import "../assets/global.css";
   const heatmapBanner = document.getElementById(
     "heatmap-banner",
   ) as HTMLCanvasElement;
-  const width = heatmapBanner.offsetWidth;
-  const height = heatmapBanner.offsetHeight;
+  const width = Math.floor(heatmapBanner.offsetWidth / 2);
+  const height = Math.floor(heatmapBanner.offsetHeight / 2);
   heatmapBanner.width = width;
   heatmapBanner.height = height;
 
@@ -27,17 +27,17 @@ import "../assets/global.css";
   type Rect = { x: number; y: number; shade: number };
 
   let dotList: Dot[] = [];
-  const MAX_RADIUS = 30;
-  const MIN_RADIUS = 28;
+  const MAX_RADIUS = 15;
+  const MIN_RADIUS = 10;
   const MAX_DOTS = 50;
 
   const NUM_RECTS = 10;
-  const MIN_RECT_HEIGHT = 24;
+  const MIN_RECT_HEIGHT = 16;
   const rectList: Rect[] = [];
   for (let i = 0; i < NUM_RECTS; i++) {
     rectList.push({
       x: 0,
-      y: Math.floor(i * MIN_RECT_HEIGHT + Math.random() * 16),
+      y: Math.floor(i * MIN_RECT_HEIGHT + Math.random() * 8),
       shade: Math.random(),
     });
   }
@@ -67,13 +67,10 @@ import "../assets/global.css";
     for (const dot of dots) {
       const intensity = Math.max(
         0,
-        Math.min(
-          255,
-          Math.floor((255 * (MAX_RADIUS - dot.radius)) / MAX_RADIUS / 2),
-        ),
+        Math.min(255, Math.floor((255 * dot.radius) / MAX_RADIUS / 2)),
       );
       const hexVal = intensity.toString(16).padStart(2, "0");
-      ctx.fillStyle = `#${hexVal}${hexVal}${hexVal}0a`;
+      ctx.fillStyle = `#${hexVal}${hexVal}${hexVal}0f`;
       ctx.beginPath();
       ctx.ellipse(dot.x, dot.y, dot.radius, dot.radius, 0, 0, Math.PI * 2);
       ctx.fill();
@@ -92,8 +89,8 @@ import "../assets/global.css";
 
   heatmapBanner.addEventListener("mousemove", (e) => {
     addDot({
-      x: e.offsetX,
-      y: e.offsetY,
+      x: e.offsetX / 2,
+      y: e.offsetY / 2,
       radius: Math.random() * (MAX_RADIUS - MIN_RADIUS) + MIN_RADIUS,
     });
   });
@@ -113,8 +110,33 @@ import "../assets/global.css";
   twgl.setBuffersAndAttributes(gl, baseProgramInfo, baseQuadMesh);
 
   const canvasTexture = twgl.createTexture(gl, { src: offscreen });
+  const heatmapDitherCanvas = document.createElement(
+    "canvas",
+  ) as HTMLCanvasElement;
+  heatmapDitherCanvas.width = 64;
+  heatmapDitherCanvas.height = 1;
+
+  const heatmapCtx = heatmapDitherCanvas.getContext("2d")!;
+  const heatmapGradient = heatmapCtx.createLinearGradient(0, 0, 64, 0);
+  heatmapGradient.addColorStop(0, "#1A3EA3"); // dark blue
+  // heatmapGradient.addColorStop(0.4094, "#31FAFF"); // light blue
+  heatmapGradient.addColorStop(0.4275, "#57C875"); // green
+  // heatmapGradient.addColorStop(0.5531, "#FFE944"); // yellow
+  heatmapGradient.addColorStop(0.8718, "#FF7540"); // orange
+  // heatmapGradient.addColorStop(1.0, "#FFFFFF");
+  heatmapCtx.fillStyle = heatmapGradient;
+  heatmapCtx.fillRect(0, 0, 64, 1);
+
+  const heatmapTexture = twgl.createTexture(gl, {
+    src: heatmapDitherCanvas,
+    min: gl.LINEAR,
+    mag: gl.LINEAR,
+    wrap: gl.CLAMP_TO_EDGE,
+  });
+
   const baseUniforms = {
     tSource: canvasTexture,
+    tGradient: heatmapTexture,
     uTime: 0,
   };
   twgl.setUniforms(baseProgramInfo, baseUniforms);
@@ -147,19 +169,21 @@ import "../assets/global.css";
     tBayer: ditherTexture,
     uTime: 0,
     uResolution: [width, height],
-    uDitherSize: 2,
+    uDitherSize: 1,
     uNumColors: 2,
-    uIntensity: 1,
+    uIntensity: 0.45,
   };
 
   twgl.setUniforms(ditherProgramInfo, ditherUniforms);
 
   /**
    * rendering pipeline
-   * 1. grayscale rects + cursor
+   * 1. CPU frames (i.e. distinct bars, etc.), circles
    * 2. gradient pass
    * 3. rainbow mapping
    * 4. dithering
+   *
+   * 1,2, and 3 are all in the first source shader
    */
 
   let time = 0;
@@ -177,6 +201,7 @@ import "../assets/global.css";
     twgl.setTextureFromElement(gl, canvasTexture, offscreen);
     const newBaseUniforms = {
       tSource: canvasTexture,
+      tGradient: heatmapTexture,
       uTime: time,
     };
     twgl.setUniforms(baseProgramInfo, newBaseUniforms);
@@ -208,9 +233,9 @@ import "../assets/global.css";
   <div
     class="min-w-full min-h-full flex flex-col items-center justify-start py-8 open-sans"
   >
-    <div class="grid grid-cols-6 w-full max-w-4xl h-min py-8 gap-8">
+    <div class="grid grid-cols-6 w-full max-w-4xl h-min pt-16 gap-8 gap-y-16">
       <div class="flex col-start-1 col-span-2 row-start-1 h-full items-end">
-        <h1 class="flex flex-col text-2xl eb-garamond">
+        <h1 class="flex flex-col text-4xl eb-garamond h-28">
           <span>Creative</span>
           <span>Technology</span>
           <span class="flex gap-2">
@@ -219,12 +244,14 @@ import "../assets/global.css";
           </span>
         </h1>
       </div>
-      <canvas
-        class="relative overflow-clip h-32 w-full col-start-3 col-span-4 row-start-1 [image-rendering:pixelated]"
-        id="heatmap-banner"
-      >
-      </canvas>
-      <p class="col-start-3 col-span-4 row-start-2">
+      <div class="relative col-start-3 col-span-4 row-start-1">
+        <canvas
+          class="overflow-clip w-full h-36 [image-rendering:pixelated] border-neutral-200"
+          id="heatmap-banner"
+        >
+        </canvas>
+      </div>
+      <p class="col-start-3 col-span-4 row-start-2 leading-8 text-neutral-500">
         We build exploratory projects that push the boundaries of <span
           class="font-bold">Artificial Intelligence</span
         >, <span class="font-bold">Digital Storytelling</span>, and <span
@@ -235,7 +262,9 @@ import "../assets/global.css";
     <div
       class="grid grid-cols-6 w-full max-w-4xl h-min border-b border-neutral-300 mt-4"
     >
-      <h2 class="flex flex-col col-start-1 col-span-full w-full kode-mono pb-2">
+      <h2
+        class="flex flex-col col-start-1 col-span-full w-full kode-mono pb-2 text-neutral-400"
+      >
         Projects
       </h2>
     </div>
