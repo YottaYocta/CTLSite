@@ -1,0 +1,179 @@
+---
+interface Props {
+  objData?: string;
+  class?: string;
+}
+
+const { objData = "", class: className } = Astro.props;
+---
+
+<div class:list={["obj-viewer-container relative", className]} data-obj={objData}>
+  <canvas class="obj-viewer w-full h-full"></canvas>
+</div>
+
+<script>
+  import * as THREE from "three";
+  import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
+  import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+  import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+  import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
+
+  const container = document.querySelector(".obj-viewer-container") as HTMLElement;
+  const canvas = document.querySelector(".obj-viewer") as HTMLCanvasElement;
+  const objData = container.dataset.obj ?? "";
+
+  const width = container.offsetWidth;
+  const height = container.offsetHeight;
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0xffffff);
+
+  const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
+  camera.position.z = 5;
+
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  renderer.setSize(width, height);
+  renderer.setPixelRatio(window.devicePixelRatio);
+
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+  scene.add(ambientLight);
+
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 10);
+  directionalLight.position.set(5, 5, 5);
+  scene.add(directionalLight);
+
+  let object: THREE.Object3D;
+
+  if (objData && objData.trim() !== "") {
+    const loader = new OBJLoader();
+    object = loader.parse(objData);
+
+    const box = new THREE.Box3().setFromObject(object);
+    const center = box.getCenter(new THREE.Vector3());
+    const size = box.getSize(new THREE.Vector3());
+    const maxDim = Math.max(size.x, size.y, size.z);
+    const scale = 2 / maxDim;
+
+    object.position.sub(center);
+    object.scale.setScalar(scale);
+  } else {
+    const geometry = new THREE.BoxGeometry(1.5, 1.5, 1.5);
+    const material = new THREE.MeshStandardMaterial({ color: 0x888888 });
+    object = new THREE.Mesh(geometry, material);
+  }
+
+  scene.add(object);
+
+  const bayerData = new Uint8Array([
+    0, 128, 32, 160, 8, 136, 40, 168, 192, 64, 224, 96, 200, 72, 232, 104, 48,
+    176, 16, 144, 56, 184, 24, 152, 240, 112, 208, 80, 248, 120, 216, 88, 12,
+    140, 44, 172, 4, 132, 36, 164, 204, 76, 236, 108, 196, 68, 228, 100, 60,
+    188, 28, 156, 52, 180, 20, 148, 252, 124, 220, 92, 244, 116, 212, 84,
+  ]);
+
+  const bayerTexture = new THREE.DataTexture(
+    bayerData,
+    8,
+    8,
+    THREE.RedFormat,
+    THREE.UnsignedByteType,
+  );
+  bayerTexture.wrapS = THREE.RepeatWrapping;
+  bayerTexture.wrapT = THREE.RepeatWrapping;
+  bayerTexture.minFilter = THREE.NearestFilter;
+  bayerTexture.magFilter = THREE.NearestFilter;
+  bayerTexture.needsUpdate = true;
+
+  const composer = new EffectComposer(renderer);
+
+  const renderPass = new RenderPass(scene, camera);
+  composer.addPass(renderPass);
+
+  const ditherShader = {
+    uniforms: {
+      tDiffuse: { value: null },
+      tBayer: { value: bayerTexture },
+      uTime: { value: 0 },
+      uResolution: { value: new THREE.Vector2(width, height) },
+      uDitherSize: { value: 2 },
+      uNumColors: { value: 2 },
+      uIntensity: { value: 1 },
+    },
+    vertexShader: `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+    precision mediump float;
+
+varying vec2 vUv;
+
+uniform sampler2D tDiffuse;
+uniform sampler2D tBayer;
+uniform float uTime;
+uniform vec2 uResolution;
+uniform float uDitherSize;
+uniform int uNumColors;
+uniform float uIntensity;
+
+vec3 dither(vec3 color, float threshold) {
+    float nColors = float(uNumColors);
+    float offset = (threshold - 0.5) * uIntensity / (nColors - 1.0);
+    return floor((color + offset) * (nColors - 1.0) + 0.5) / (nColors - 1.0);
+}
+
+void main() {
+    vec2 uv = vec2(vUv.x, 1.0-vUv.y);
+
+    vec2 pixel = uv * uResolution;
+    vec2 cell = floor(pixel / uDitherSize);
+
+    vec2 sampleUv = (cell * uDitherSize + 0.5) / uResolution;
+    sampleUv = vec2(sampleUv.x, sampleUv.y);
+    vec4 color = texture2D(tDiffuse, sampleUv);
+
+    vec2 bayerUv = mod(cell, 8.0) / 8.0;
+    float threshold = texture2D(tBayer, bayerUv).r;
+
+    color.rgb = dither(color.rgb, threshold);
+
+    gl_FragColor = vec4(color.rgb, 1.0);
+}
+`,
+  };
+
+  const ditherPass = new ShaderPass(ditherShader);
+  composer.addPass(ditherPass);
+
+  let time = 0;
+  const animate = () => {
+    requestAnimationFrame(animate);
+    time += 0.01;
+
+    object.rotation.y = Math.sin(time) * 0.5 + time * 0.3;
+    object.rotation.x = Math.cos(time * 0.7) * 0.2;
+
+    ditherPass.uniforms.uTime.value = time;
+    ditherPass.uniforms.tBayer.value = bayerTexture;
+
+    composer.render();
+  };
+
+  animate();
+
+  const resizeObserver = new ResizeObserver((entries) => {
+    for (const entry of entries) {
+      const { width, height } = entry.contentRect;
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height);
+      composer.setSize(width, height);
+      ditherPass.uniforms.uResolution.value.set(width, height);
+    }
+  });
+
+  resizeObserver.observe(container);
+</script>

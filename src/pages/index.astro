@@ -1,233 +1,10 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import ProjectSection from "../components/ProjectSection.astro";
+import HeatmapBanner from "../components/HeatmapBanner.astro";
+import ObjViewer from "../components/ObjViewer.astro";
 import "../assets/global.css";
 ---
-
-<script>
-  import * as twgl from "twgl.js";
-  import vertex from "../shaders/passthrough.vert?raw";
-  import fragment from "../shaders/source.frag?raw";
-  import checkerFrag from "../shaders/checker.frag?raw";
-
-  const heatmapBanner = document.getElementById(
-    "heatmap-banner",
-  ) as HTMLCanvasElement;
-  const width = Math.floor(heatmapBanner.offsetWidth / 2);
-  const height = Math.floor(heatmapBanner.offsetHeight / 2);
-  heatmapBanner.width = width;
-  heatmapBanner.height = height;
-
-  const offscreen = document.createElement("canvas");
-  offscreen.width = width;
-  offscreen.height = height;
-  const ctx2d = offscreen.getContext("2d")!;
-
-  type Dot = { x: number; y: number; radius: number };
-  type Rect = { x: number; y: number; shade: number };
-
-  let dotList: Dot[] = [];
-  const MAX_RADIUS = 15;
-  const MIN_RADIUS = 10;
-  const MAX_DOTS = 50;
-
-  const NUM_RECTS = 10;
-  const MIN_RECT_HEIGHT = 16;
-  const rectList: Rect[] = [];
-  for (let i = 0; i < NUM_RECTS; i++) {
-    rectList.push({
-      x: 0,
-      y: Math.floor(i * MIN_RECT_HEIGHT + Math.random() * 8),
-      shade: Math.random(),
-    });
-  }
-
-  const addDot = (newDot: Dot) => {
-    dotList.push(newDot);
-    if (dotList.length > MAX_DOTS) dotList.shift();
-  };
-
-  const tickDots = () => {
-    dotList = dotList
-      .map((dot) => ({
-        ...dot,
-        radius:
-          dot.radius -
-          Math.max(0.01, Math.pow(2, (MAX_RADIUS - dot.radius) / 4) / 10.0),
-      }))
-      .filter((dot) => dot.radius > 0);
-  };
-
-  const clearCanvas = (ctx: CanvasRenderingContext2D) => {
-    ctx.fillStyle = "#fff";
-    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  };
-
-  const drawDots = (ctx: CanvasRenderingContext2D, dots: Dot[]) => {
-    for (const dot of dots) {
-      const intensity = Math.max(
-        0,
-        Math.min(255, Math.floor((255 * dot.radius) / MAX_RADIUS / 2)),
-      );
-      const hexVal = intensity.toString(16).padStart(2, "0");
-      ctx.fillStyle = `#${hexVal}${hexVal}${hexVal}0f`;
-      ctx.beginPath();
-      ctx.ellipse(dot.x, dot.y, dot.radius, dot.radius, 0, 0, Math.PI * 2);
-      ctx.fill();
-    }
-  };
-
-  const drawRects = (ctx: CanvasRenderingContext2D, rects: Rect[]) => {
-    for (const rect of rects) {
-      const hexVal = Math.floor(rect.shade * 255)
-        .toString(16)
-        .padStart(2, "0");
-      ctx.fillStyle = `#${hexVal}${hexVal}${hexVal}`;
-      ctx.fillRect(rect.x, rect.y, width, MIN_RECT_HEIGHT + 32 * rect.shade);
-    }
-  };
-
-  heatmapBanner.addEventListener("mousemove", (e) => {
-    addDot({
-      x: e.offsetX / 2,
-      y: e.offsetY / 2,
-      radius: Math.random() * (MAX_RADIUS - MIN_RADIUS) + MIN_RADIUS,
-    });
-  });
-
-  // webgl stuff
-
-  /**
-   *  create program that renders dither with tex input from quad render result
-   */
-
-  const gl = heatmapBanner.getContext("webgl2")!;
-  gl.viewport(0, 0, width, height);
-  const baseQuadMesh = twgl.primitives.createXYQuadBufferInfo(gl); // reuse for every program
-
-  const baseProgramInfo = twgl.createProgramInfo(gl, [vertex, fragment]);
-  gl.useProgram(baseProgramInfo.program);
-  twgl.setBuffersAndAttributes(gl, baseProgramInfo, baseQuadMesh);
-
-  const canvasTexture = twgl.createTexture(gl, { src: offscreen });
-  const heatmapDitherCanvas = document.createElement(
-    "canvas",
-  ) as HTMLCanvasElement;
-  heatmapDitherCanvas.width = 64;
-  heatmapDitherCanvas.height = 1;
-
-  const heatmapCtx = heatmapDitherCanvas.getContext("2d")!;
-  const heatmapGradient = heatmapCtx.createLinearGradient(0, 0, 64, 0);
-  heatmapGradient.addColorStop(0, "#1A3EA3"); // dark blue
-  // heatmapGradient.addColorStop(0.4094, "#31FAFF"); // light blue
-  heatmapGradient.addColorStop(0.4275, "#57C875"); // green
-  // heatmapGradient.addColorStop(0.5531, "#FFE944"); // yellow
-  heatmapGradient.addColorStop(0.8718, "#FF7540"); // orange
-  // heatmapGradient.addColorStop(1.0, "#FFFFFF");
-  heatmapCtx.fillStyle = heatmapGradient;
-  heatmapCtx.fillRect(0, 0, 64, 1);
-
-  const heatmapTexture = twgl.createTexture(gl, {
-    src: heatmapDitherCanvas,
-    min: gl.LINEAR,
-    mag: gl.LINEAR,
-    wrap: gl.CLAMP_TO_EDGE,
-  });
-
-  const baseUniforms = {
-    tSource: canvasTexture,
-    tGradient: heatmapTexture,
-    uTime: 0,
-  };
-  twgl.setUniforms(baseProgramInfo, baseUniforms);
-
-  const baseFBOInfo = twgl.createFramebufferInfo(gl);
-
-  // use framebuffer as uniform for dither shader
-
-  const ditherProgramInfo = twgl.createProgramInfo(gl, [vertex, checkerFrag]);
-  gl.useProgram(ditherProgramInfo.program);
-  twgl.setBuffersAndAttributes(gl, ditherProgramInfo, baseQuadMesh);
-
-  const ditherTexture = twgl.createTexture(gl, {
-    width: 8,
-    height: 8,
-    wrapS: gl.REPEAT,
-    wrapT: gl.REPEAT,
-    internalFormat: gl.LUMINANCE,
-    format: gl.LUMINANCE,
-    minMag: gl.NEAREST,
-    src: new Uint8Array([
-      0, 128, 32, 160, 8, 136, 40, 168, 192, 64, 224, 96, 200, 72, 232, 104, 48,
-      176, 16, 144, 56, 184, 24, 152, 240, 112, 208, 80, 248, 120, 216, 88, 12,
-      140, 44, 172, 4, 132, 36, 164, 204, 76, 236, 108, 196, 68, 228, 100, 60,
-      188, 28, 156, 52, 180, 20, 148, 252, 124, 220, 92, 244, 116, 212, 84,
-    ]),
-  });
-  const ditherUniforms = {
-    tSource: baseFBOInfo,
-    tBayer: ditherTexture,
-    uTime: 0,
-    uResolution: [width, height],
-    uDitherSize: 1,
-    uNumColors: 2,
-    uIntensity: 0.45,
-  };
-
-  twgl.setUniforms(ditherProgramInfo, ditherUniforms);
-
-  /**
-   * rendering pipeline
-   * 1. CPU frames (i.e. distinct bars, etc.), circles
-   * 2. gradient pass
-   * 3. rainbow mapping
-   * 4. dithering
-   *
-   * 1,2, and 3 are all in the first source shader
-   */
-
-  let time = 0;
-  const render = () => {
-    time += 0.01;
-
-    tickDots();
-    clearCanvas(ctx2d);
-    drawRects(ctx2d, rectList);
-    drawDots(ctx2d, dotList);
-
-    // render base to fbo
-
-    gl.useProgram(baseProgramInfo.program);
-    twgl.setTextureFromElement(gl, canvasTexture, offscreen);
-    const newBaseUniforms = {
-      tSource: canvasTexture,
-      tGradient: heatmapTexture,
-      uTime: time,
-    };
-    twgl.setUniforms(baseProgramInfo, newBaseUniforms);
-    twgl.setBuffersAndAttributes(gl, baseProgramInfo, baseQuadMesh);
-
-    twgl.bindFramebufferInfo(gl, baseFBOInfo);
-    twgl.drawBufferInfo(gl, baseQuadMesh);
-    twgl.bindFramebufferInfo(gl, null);
-
-    // render dither with updated texture
-    gl.useProgram(ditherProgramInfo.program);
-    twgl.bindFramebufferInfo(gl, null);
-    const changedUniforms = {
-      uTime: time,
-      tSource: baseFBOInfo.attachments[0],
-      tBayer: ditherTexture,
-    };
-    twgl.setUniforms(ditherProgramInfo, changedUniforms);
-    twgl.setBuffersAndAttributes(gl, ditherProgramInfo, baseQuadMesh);
-    twgl.drawBufferInfo(gl, baseQuadMesh);
-
-    requestAnimationFrame(render);
-  };
-
-  render();
-</script>
 
 <Layout>
   <div
@@ -244,12 +21,10 @@ import "../assets/global.css";
           </span>
         </h1>
       </div>
-      <div class="relative col-start-3 col-span-4 row-start-1">
-        <canvas
-          class="overflow-clip w-full h-36 [image-rendering:pixelated] border-neutral-200"
-          id="heatmap-banner"
-        >
-        </canvas>
+      <div
+        class="relative col-start-3 col-span-4 row-start-1 overflow-clip h-36"
+      >
+        <HeatmapBanner />
       </div>
       <p class="col-start-3 col-span-4 row-start-2 leading-8 text-neutral-500">
         We build exploratory projects that push the boundaries of <span
@@ -274,7 +49,9 @@ import "../assets/global.css";
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum illum
         asperiores adipisci quae accusantium. Harum molestias dolorem?
       </Fragment>
-      <Fragment slot="content"></Fragment>
+      <Fragment slot="content">
+        <ObjViewer class="w-full h-full" />
+      </Fragment>
       <Fragment slot="button">
         <button
           class="px-6 py-1 bg-white rounded-sm border border-neutral-200 kode-mono text-sm"
@@ -288,7 +65,9 @@ import "../assets/global.css";
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum illum
         asperiores adipisci quae accusantium. Harum molestias dolorem?
       </Fragment>
-      <Fragment slot="content"></Fragment>
+      <Fragment slot="content">
+        <ObjViewer class="w-full h-full" />
+      </Fragment>
       <Fragment slot="button">
         <button
           class="px-6 py-2 bg-white rounded-sm border border-neutral-200 kode-mono text-sm"
