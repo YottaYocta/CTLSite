@@ -7,7 +7,10 @@ interface Props {
 const { objData = "", class: className } = Astro.props;
 ---
 
-<div class:list={["obj-viewer-container relative", className]} data-obj={objData}>
+<div
+  class:list={["obj-viewer-container relative", className]}
+  data-obj={objData}
+>
   <canvas class="obj-viewer w-full h-full"></canvas>
 </div>
 
@@ -17,8 +20,12 @@ const { objData = "", class: className } = Astro.props;
   import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
   import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
   import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
+  import checkerFrag from "../shaders/checker.frag?raw";
+  import { createHeatmapGradientCanvas } from "../utils/heatmapGradient";
 
-  const container = document.querySelector(".obj-viewer-container") as HTMLElement;
+  const container = document.querySelector(
+    ".obj-viewer-container",
+  ) as HTMLElement;
   const canvas = document.querySelector(".obj-viewer") as HTMLCanvasElement;
   const objData = container.dataset.obj ?? "";
 
@@ -84,6 +91,12 @@ const { objData = "", class: className } = Astro.props;
   bayerTexture.magFilter = THREE.NearestFilter;
   bayerTexture.needsUpdate = true;
 
+  const heatmapGradientCanvas = createHeatmapGradientCanvas();
+  const gradientTexture = new THREE.CanvasTexture(heatmapGradientCanvas);
+  gradientTexture.minFilter = THREE.LinearFilter;
+  gradientTexture.magFilter = THREE.LinearFilter;
+  gradientTexture.wrapS = THREE.ClampToEdgeWrapping;
+
   const composer = new EffectComposer(renderer);
 
   const renderPass = new RenderPass(scene, camera);
@@ -93,11 +106,12 @@ const { objData = "", class: className } = Astro.props;
     uniforms: {
       tDiffuse: { value: null },
       tBayer: { value: bayerTexture },
+      tGradient: { value: gradientTexture },
       uTime: { value: 0 },
       uResolution: { value: new THREE.Vector2(width, height) },
       uDitherSize: { value: 2 },
       uNumColors: { value: 2 },
-      uIntensity: { value: 1 },
+      uIntensity: { value: 0.2 },
     },
     vertexShader: `
       varying vec2 vUv;
@@ -106,43 +120,7 @@ const { objData = "", class: className } = Astro.props;
         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
       }
     `,
-    fragmentShader: `
-    precision mediump float;
-
-varying vec2 vUv;
-
-uniform sampler2D tDiffuse;
-uniform sampler2D tBayer;
-uniform float uTime;
-uniform vec2 uResolution;
-uniform float uDitherSize;
-uniform int uNumColors;
-uniform float uIntensity;
-
-vec3 dither(vec3 color, float threshold) {
-    float nColors = float(uNumColors);
-    float offset = (threshold - 0.5) * uIntensity / (nColors - 1.0);
-    return floor((color + offset) * (nColors - 1.0) + 0.5) / (nColors - 1.0);
-}
-
-void main() {
-    vec2 uv = vec2(vUv.x, 1.0-vUv.y);
-
-    vec2 pixel = uv * uResolution;
-    vec2 cell = floor(pixel / uDitherSize);
-
-    vec2 sampleUv = (cell * uDitherSize + 0.5) / uResolution;
-    sampleUv = vec2(sampleUv.x, sampleUv.y);
-    vec4 color = texture2D(tDiffuse, sampleUv);
-
-    vec2 bayerUv = mod(cell, 8.0) / 8.0;
-    float threshold = texture2D(tBayer, bayerUv).r;
-
-    color.rgb = dither(color.rgb, threshold);
-
-    gl_FragColor = vec4(color.rgb, 1.0);
-}
-`,
+    fragmentShader: checkerFrag.replaceAll("tSource", "tDiffuse"),
   };
 
   const ditherPass = new ShaderPass(ditherShader);

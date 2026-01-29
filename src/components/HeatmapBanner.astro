@@ -3,6 +3,7 @@
   import vertex from "../shaders/passthrough.vert?raw";
   import fragment from "../shaders/source.frag?raw";
   import checkerFrag from "../shaders/checker.frag?raw";
+  import { createHeatmapGradientCanvas } from "../utils/heatmapGradient";
 
   const heatmapBanner = document.getElementById(
     "heatmap-banner",
@@ -64,7 +65,7 @@
         Math.min(255, Math.floor((255 * dot.radius) / MAX_RADIUS / 2)),
       );
       const hexVal = intensity.toString(16).padStart(2, "0");
-      ctx.fillStyle = `#${hexVal}${hexVal}${hexVal}0f`;
+      ctx.fillStyle = `#${hexVal}${hexVal}${hexVal}20`;
       ctx.beginPath();
       ctx.ellipse(dot.x, dot.y, dot.radius, dot.radius, 0, 0, Math.PI * 2);
       ctx.fill();
@@ -104,28 +105,7 @@
   twgl.setBuffersAndAttributes(gl, baseProgramInfo, baseQuadMesh);
 
   const canvasTexture = twgl.createTexture(gl, { src: offscreen });
-  const heatmapDitherCanvas = document.createElement(
-    "canvas",
-  ) as HTMLCanvasElement;
-  heatmapDitherCanvas.width = 64;
-  heatmapDitherCanvas.height = 1;
-
-  const heatmapCtx = heatmapDitherCanvas.getContext("2d")!;
-  const heatmapGradient = heatmapCtx.createLinearGradient(0, 0, 64, 0);
-  // constant interpolation: duplicate stops to create hard edges
-  heatmapGradient.addColorStop(0, "#5755C3"); // dark blue
-  heatmapGradient.addColorStop(0.2999, "#5755C3");
-  heatmapGradient.addColorStop(0.3, "#31FAFF"); // light blue
-  heatmapGradient.addColorStop(0.449999, "#31FAFF");
-  heatmapGradient.addColorStop(0.45, "#29FF49"); // green
-  heatmapGradient.addColorStop(0.599, "#29FF49");
-  heatmapGradient.addColorStop(0.6, "#F1FF5B"); // yellow
-  heatmapGradient.addColorStop(0.749, "#F1FF5B");
-  heatmapGradient.addColorStop(0.75, "#FF8B21"); // orange
-  heatmapGradient.addColorStop(0.989, "#FF8B21"); // orange
-  heatmapGradient.addColorStop(0.99, "#FFF"); // white
-  heatmapCtx.fillStyle = heatmapGradient;
-  heatmapCtx.fillRect(0, 0, 64, 1);
+  const heatmapDitherCanvas = createHeatmapGradientCanvas();
 
   const heatmapTexture = twgl.createTexture(gl, {
     src: heatmapDitherCanvas,
@@ -172,7 +152,7 @@
     uResolution: [width, height],
     uDitherSize: 1,
     uNumColors: 8,
-    uIntensity: 0.25,
+    uIntensity: 0.3,
   };
 
   twgl.setUniforms(ditherProgramInfo, ditherUniforms);
