@@ -24,29 +24,20 @@ import "../assets/global.css";
   const ctx2d = offscreen.getContext("2d")!;
 
   type Dot = { x: number; y: number; radius: number };
-  type Rect = { x: number; y: number; size: number };
+  type Rect = { x: number; y: number; shade: number };
 
   let dotList: Dot[] = [];
   const MAX_RADIUS = 40;
   const MIN_RADIUS = 30;
   const MAX_DOTS = 30;
 
-  const NUM_RECTS = 20;
-  const MAX_SIZE = 400;
-  const MIN_SIZE = 50;
+  const NUM_RECTS = 6;
   const rectList: Rect[] = [];
   for (let i = 0; i < NUM_RECTS; i++) {
     rectList.push({
-      x: (Math.random() * width) / 2,
-      y: Math.random() * height,
-      size: Math.random() * (MAX_SIZE - MIN_SIZE) + MIN_SIZE,
-    });
-  }
-  for (let i = 0; i < 4; i++) {
-    rectList.push({
       x: 0,
-      y: Math.random() * height,
-      size: Math.random() * (MAX_SIZE - MIN_SIZE) + MIN_SIZE,
+      y: Math.floor(i * 32 + Math.random() * 16),
+      shade: Math.random(),
     });
   }
 
@@ -90,16 +81,11 @@ import "../assets/global.css";
 
   const drawRects = (ctx: CanvasRenderingContext2D, rects: Rect[]) => {
     for (const rect of rects) {
-      const intensity = Math.floor(
-        Math.max(
-          255 / 2,
-          Math.min(255, ((MAX_SIZE - rect.size) / MAX_SIZE) * 255),
-        ),
-      );
-
-      const hexVal = intensity.toString(16).padStart(2, "0");
+      const hexVal = Math.floor(rect.shade * 255)
+        .toString(16)
+        .padStart(2, "0");
       ctx.fillStyle = `#${hexVal}${hexVal}${hexVal}`;
-      ctx.fillRect(rect.x, rect.y, rect.size, 32);
+      ctx.fillRect(rect.x, rect.y, width, 32 + 32 * rect.shade);
     }
   };
 
@@ -128,6 +114,7 @@ import "../assets/global.css";
   const canvasTexture = twgl.createTexture(gl, { src: offscreen });
   const baseUniforms = {
     tSource: canvasTexture,
+    uTime: 0,
   };
   twgl.setUniforms(baseProgramInfo, baseUniforms);
 
@@ -189,6 +176,7 @@ import "../assets/global.css";
     twgl.setTextureFromElement(gl, canvasTexture, offscreen);
     const newBaseUniforms = {
       tSource: canvasTexture,
+      uTime: time,
     };
     twgl.setUniforms(baseProgramInfo, newBaseUniforms);
     twgl.setBuffersAndAttributes(gl, baseProgramInfo, baseQuadMesh);
