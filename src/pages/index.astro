@@ -120,12 +120,20 @@ import "../assets/global.css";
     tBayer: ditherTexture,
     uTime: 0,
     uResolution: [width, height],
-    uDitherSize: 2,
-    uNumColors: 3,
+    uDitherSize: 4,
+    uNumColors: 2,
     uIntensity: 1,
   };
 
   twgl.setUniforms(ditherProgramInfo, ditherUniforms);
+
+  /**
+   * rendering pipeline
+   * 1. grayscale rects + cursor
+   * 2. gradient pass
+   * 3. rainbow mapping
+   * 4. dithering
+   */
 
   let time = 0;
   const render = () => {
