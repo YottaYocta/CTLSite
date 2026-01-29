@@ -29,7 +29,7 @@ import "../assets/global.css";
   let dotList: Dot[] = [];
   const MAX_RADIUS = 30;
   const MIN_RADIUS = 28;
-  const MAX_DOTS = 100;
+  const MAX_DOTS = 50;
 
   const NUM_RECTS = 10;
   const MIN_RECT_HEIGHT = 24;
@@ -53,7 +53,7 @@ import "../assets/global.css";
         ...dot,
         radius:
           dot.radius -
-          Math.max(0.01, Math.pow(2, (MAX_RADIUS - dot.radius) / 4) / 50),
+          Math.max(0.01, Math.pow(2, (MAX_RADIUS - dot.radius) / 4) / 10.0),
       }))
       .filter((dot) => dot.radius > 0);
   };
@@ -69,12 +69,11 @@ import "../assets/global.css";
         0,
         Math.min(
           255,
-          Math.floor((255 * (MAX_RADIUS - dot.radius)) / MAX_RADIUS),
+          Math.floor((255 * (MAX_RADIUS - dot.radius)) / MAX_RADIUS / 2),
         ),
       );
       const hexVal = intensity.toString(16).padStart(2, "0");
-      const inverseHex = (255 - intensity).toString(16).padStart(2, "0");
-      ctx.fillStyle = `#${hexVal}${hexVal}${hexVal}${inverseHex}`;
+      ctx.fillStyle = `#${hexVal}${hexVal}${hexVal}0a`;
       ctx.beginPath();
       ctx.ellipse(dot.x, dot.y, dot.radius, dot.radius, 0, 0, Math.PI * 2);
       ctx.fill();

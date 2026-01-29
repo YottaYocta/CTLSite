@@ -16,6 +16,6 @@ void main() {
     vec4 sourceColor = texture2D(tSource, vec2(uv.x, uv.y));
     float gradientOffset = computeValue(sourceColor);
 
-    float currentGradientPosition = pow((1.0 - sin(3.0 * PI * (uv.x - uTime * (gradientOffset / 30.0)-gradientOffset))) / 2.0, 2.0);
+    float currentGradientPosition = pow((1.0 - sin(3.0 * PI * (uv.x - uTime / 80.0 - gradientOffset))) / 2.0, 2.0);
     gl_FragColor = vec4(vec3(currentGradientPosition), 1.0);
 }
