@@ -24,10 +24,31 @@ import "../assets/global.css";
   const ctx2d = offscreen.getContext("2d")!;
 
   type Dot = { x: number; y: number; radius: number };
+  type Rect = { x: number; y: number; size: number };
+
   let dotList: Dot[] = [];
   const MAX_RADIUS = 40;
   const MIN_RADIUS = 30;
   const MAX_DOTS = 30;
+
+  const NUM_RECTS = 20;
+  const MAX_SIZE = 400;
+  const MIN_SIZE = 50;
+  const rectList: Rect[] = [];
+  for (let i = 0; i < NUM_RECTS; i++) {
+    rectList.push({
+      x: (Math.random() * width) / 2,
+      y: Math.random() * height,
+      size: Math.random() * (MAX_SIZE - MIN_SIZE) + MIN_SIZE,
+    });
+  }
+  for (let i = 0; i < 4; i++) {
+    rectList.push({
+      x: 0,
+      y: Math.random() * height,
+      size: Math.random() * (MAX_SIZE - MIN_SIZE) + MIN_SIZE,
+    });
+  }
 
   const addDot = (newDot: Dot) => {
     dotList.push(newDot);
@@ -45,9 +66,12 @@ import "../assets/global.css";
       .filter((dot) => dot.radius > 0);
   };
 
-  const drawDots = (ctx: CanvasRenderingContext2D, dots: Dot[]) => {
+  const clearCanvas = (ctx: CanvasRenderingContext2D) => {
     ctx.fillStyle = "#fff";
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  };
+
+  const drawDots = (ctx: CanvasRenderingContext2D, dots: Dot[]) => {
     for (const dot of dots) {
       const intensity = Math.max(
         0,
@@ -57,10 +81,25 @@ import "../assets/global.css";
         ),
       );
       const hexVal = intensity.toString(16).padStart(2, "0");
-      ctx.fillStyle = `#${"ff"}${hexVal}${hexVal}`;
+      ctx.fillStyle = `#${hexVal}${hexVal}${hexVal}`;
       ctx.beginPath();
       ctx.ellipse(dot.x, dot.y, dot.radius, dot.radius, 0, 0, Math.PI * 2);
       ctx.fill();
+    }
+  };
+
+  const drawRects = (ctx: CanvasRenderingContext2D, rects: Rect[]) => {
+    for (const rect of rects) {
+      const intensity = Math.floor(
+        Math.max(
+          255 / 2,
+          Math.min(255, ((MAX_SIZE - rect.size) / MAX_SIZE) * 255),
+        ),
+      );
+
+      const hexVal = intensity.toString(16).padStart(2, "0");
+      ctx.fillStyle = `#${hexVal}${hexVal}${hexVal}`;
+      ctx.fillRect(rect.x, rect.y, rect.size, 32);
     }
   };
 
@@ -140,6 +179,8 @@ import "../assets/global.css";
     time += 0.01;
 
     tickDots();
+    clearCanvas(ctx2d);
+    drawRects(ctx2d, rectList);
     drawDots(ctx2d, dotList);
 
     // render base to fbo
@@ -152,21 +193,21 @@ import "../assets/global.css";
     twgl.setUniforms(baseProgramInfo, newBaseUniforms);
     twgl.setBuffersAndAttributes(gl, baseProgramInfo, baseQuadMesh);
 
-    twgl.bindFramebufferInfo(gl, baseFBOInfo);
-    twgl.drawBufferInfo(gl, baseQuadMesh);
+    // twgl.bindFramebufferInfo(gl, baseFBOInfo);
     twgl.bindFramebufferInfo(gl, null);
+    twgl.drawBufferInfo(gl, baseQuadMesh);
 
     // render dither with updated texture
-    gl.useProgram(ditherProgramInfo.program);
-    twgl.bindFramebufferInfo(gl, null);
-    const changedUniforms = {
-      uTime: time,
-      tSource: baseFBOInfo.attachments[0],
-      tBayer: ditherTexture,
-    };
-    twgl.setUniforms(ditherProgramInfo, changedUniforms);
-    twgl.setBuffersAndAttributes(gl, ditherProgramInfo, baseQuadMesh);
-    twgl.drawBufferInfo(gl, baseQuadMesh);
+    // gl.useProgram(ditherProgramInfo.program);
+    // twgl.bindFramebufferInfo(gl, null);
+    // const changedUniforms = {
+    //   uTime: time,
+    //   tSource: baseFBOInfo.attachments[0],
+    //   tBayer: ditherTexture,
+    // };
+    // twgl.setUniforms(ditherProgramInfo, changedUniforms);
+    // twgl.setBuffersAndAttributes(gl, ditherProgramInfo, baseQuadMesh);
+    // twgl.drawBufferInfo(gl, baseQuadMesh);
 
     requestAnimationFrame(render);
   };

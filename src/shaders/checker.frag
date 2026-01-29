@@ -23,7 +23,7 @@ void main() {
     vec2 cell = floor(pixel / uDitherSize);
 
     vec2 sampleUv = (cell * uDitherSize + 0.5) / uResolution;
-    sampleUv = vec2(sampleUv.x, 1.0 - sampleUv.y);
+    sampleUv = vec2(sampleUv.x, sampleUv.y);
     vec4 color = texture2D(tSource, sampleUv);
 
     vec2 bayerUv = mod(cell, 8.0) / 8.0;
