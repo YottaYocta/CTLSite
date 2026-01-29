@@ -77,7 +77,7 @@
         .toString(16)
         .padStart(2, "0");
       ctx.fillStyle = `#${hexVal}${hexVal}${hexVal}`;
-      ctx.fillRect(rect.x, rect.y, width, MIN_RECT_HEIGHT + 32 * rect.shade);
+      ctx.fillRect(rect.x, rect.y, width, MIN_RECT_HEIGHT + 16 * rect.shade);
     }
   };
 
@@ -112,12 +112,18 @@
 
   const heatmapCtx = heatmapDitherCanvas.getContext("2d")!;
   const heatmapGradient = heatmapCtx.createLinearGradient(0, 0, 64, 0);
-  heatmapGradient.addColorStop(0, "#1A3EA3"); // dark blue
-  // heatmapGradient.addColorStop(0.4094, "#31FAFF"); // light blue
-  heatmapGradient.addColorStop(0.4275, "#57C875"); // green
-  // heatmapGradient.addColorStop(0.5531, "#FFE944"); // yellow
-  heatmapGradient.addColorStop(0.8718, "#FF7540"); // orange
-  // heatmapGradient.addColorStop(1.0, "#FFFFFF");
+  // constant interpolation: duplicate stops to create hard edges
+  heatmapGradient.addColorStop(0, "#5755C3"); // dark blue
+  heatmapGradient.addColorStop(0.2999, "#5755C3");
+  heatmapGradient.addColorStop(0.3, "#31FAFF"); // light blue
+  heatmapGradient.addColorStop(0.449999, "#31FAFF");
+  heatmapGradient.addColorStop(0.45, "#29FF49"); // green
+  heatmapGradient.addColorStop(0.599, "#29FF49");
+  heatmapGradient.addColorStop(0.6, "#F1FF5B"); // yellow
+  heatmapGradient.addColorStop(0.749, "#F1FF5B");
+  heatmapGradient.addColorStop(0.75, "#FF8B21"); // orange
+  heatmapGradient.addColorStop(0.989, "#FF8B21"); // orange
+  heatmapGradient.addColorStop(0.99, "#FFF"); // white
   heatmapCtx.fillStyle = heatmapGradient;
   heatmapCtx.fillRect(0, 0, 64, 1);
 
@@ -161,11 +167,12 @@
   const ditherUniforms = {
     tSource: baseFBOInfo,
     tBayer: ditherTexture,
+    tGradient: heatmapTexture,
     uTime: 0,
     uResolution: [width, height],
     uDitherSize: 1,
-    uNumColors: 2,
-    uIntensity: 0.45,
+    uNumColors: 8,
+    uIntensity: 0.25,
   };
 
   twgl.setUniforms(ditherProgramInfo, ditherUniforms);
@@ -212,6 +219,7 @@
       uTime: time,
       tSource: baseFBOInfo.attachments[0],
       tBayer: ditherTexture,
+      tGradient: heatmapTexture,
     };
     twgl.setUniforms(ditherProgramInfo, changedUniforms);
     twgl.setBuffersAndAttributes(gl, ditherProgramInfo, baseQuadMesh);
