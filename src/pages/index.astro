@@ -3,6 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import ProjectSection from "../components/ProjectSection.astro";
 import HeatmapBanner from "../components/HeatmapBanner.astro";
 import ObjViewer from "../components/ObjViewer.astro";
+import physicsModelData from "../assets/physicsmodel.obj?raw";
 import "../assets/global.css";
 ---
 
@@ -10,7 +11,7 @@ import "../assets/global.css";
   <div
     class="min-w-full min-h-full flex flex-col items-center justify-start py-8 open-sans"
   >
-    <div class="grid grid-cols-6 w-full max-w-4xl h-min pt-16 gap-8 gap-y-16">
+    <div class="grid grid-cols-6 w-full max-w-4xl h-min pt-8 gap-8 gap-y-16">
       <div class="flex col-start-1 col-span-2 row-start-1 h-full items-end">
         <h1 class="flex flex-col text-4xl eb-garamond h-28">
           <span>Creative</span>
@@ -50,7 +51,7 @@ import "../assets/global.css";
         asperiores adipisci quae accusantium. Harum molestias dolorem?
       </Fragment>
       <Fragment slot="content">
-        <ObjViewer class="w-full h-full" />
+        <ObjViewer class="w-full h-full" objData={physicsModelData} />
       </Fragment>
       <Fragment slot="button">
         <button
