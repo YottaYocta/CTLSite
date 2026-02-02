@@ -22,8 +22,8 @@
   type Rect = { x: number; y: number; shade: number };
 
   let dotList: Dot[] = [];
-  const MAX_RADIUS = 15;
-  const MIN_RADIUS = 10;
+  const MAX_RADIUS = 25;
+  const MIN_RADIUS = 20;
   const MAX_DOTS = 50;
 
   const NUM_RECTS = 10;
@@ -65,7 +65,7 @@
         Math.min(255, Math.floor((255 * dot.radius) / MAX_RADIUS / 2)),
       );
       const hexVal = intensity.toString(16).padStart(2, "0");
-      ctx.fillStyle = `#${hexVal}${hexVal}${hexVal}20`;
+      ctx.fillStyle = `#${hexVal}${hexVal}${hexVal}10`;
       ctx.beginPath();
       ctx.ellipse(dot.x, dot.y, dot.radius, dot.radius, 0, 0, Math.PI * 2);
       ctx.fill();
