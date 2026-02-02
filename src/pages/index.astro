@@ -5,6 +5,7 @@ import HeatmapBanner from "../components/HeatmapBanner.astro";
 import ObjViewer from "../components/ObjViewer.astro";
 import physicsModelData from "../assets/physicsmodel.obj?raw";
 import spectaclesData from "../assets/spectacles.obj?raw";
+import ContactItemComponent from "../components/ContactItemComponent.astro";
 import "../assets/global.css";
 ---
 
@@ -48,8 +49,8 @@ import "../assets/global.css";
     <ProjectSection>
       <Fragment slot="title">Physics EM Wave</Fragment>
       <Fragment slot="description">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum illum
-        asperiores adipisci quae accusantium. Harum molestias dolorem?
+        Built in partnership with Cornell's PHYS 1101 class. An interactive, 3D
+        visualization tool for eletrical and magnetic fields
       </Fragment>
       <Fragment slot="content">
         <ObjViewer class="w-full h-full" objData={physicsModelData} />
@@ -63,8 +64,9 @@ import "../assets/global.css";
     <ProjectSection>
       <Fragment slot="title">Spectacles</Fragment>
       <Fragment slot="description">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum illum
-        asperiores adipisci quae accusantium. Harum molestias dolorem?
+        A series of ongoing experiments with Snap Inc.'s Spectacle AR Glasses,
+        with applications ranging from real-time translation and language
+        learning.
       </Fragment>
       <Fragment slot="content">
         <ObjViewer class="w-full h-full" objData={spectaclesData} />
@@ -75,5 +77,52 @@ import "../assets/global.css";
         </a>
       </Fragment>
     </ProjectSection>
+    <div
+      class="grid grid-cols-6 w-full max-w-4xl h-min border-b border-neutral-300 mt-4"
+    >
+      <h2
+        class="flex flex-col col-start-1 col-span-full w-full kode-mono pb-2 text-neutral-400"
+      >
+        Collaborate
+      </h2>
+    </div>
+    <div
+      class="grid grid-cols-6 w-full max-w-4xl h-min pb-48 border-neutral-300 mt-4 py-16 gap-8"
+    >
+      <div
+        class="flex flex-col h-full w-full items-start justify-center gap-12 col-start-1 row-start-1 col-span-2"
+      >
+        <h3 class="flex flex-col text-3xl eb-garamond text-neutral-800">
+          Let's build something amazing together
+        </h3>
+      </div>
+      <div
+        class="h-min col-start-3 col-span-4 row-start-1 bg-neutral-50 flex flex-col p-4 py-12"
+      >
+        <p class="px-8 pb-4">Reach out to us at:</p>
+        <ul>
+          <ContactItemComponent
+            name="Parent Site"
+            link="https://teaching.cornell.edu/learning-technologies/creative-technology-lab"
+            shortenedLink="teaching.cornell.edu"
+          />
+          <ContactItemComponent
+            name="Email"
+            link="mailto:cti@cornell.edu"
+            shortenedLink="cti@cornell.edu"
+          />
+          <ContactItemComponent
+            name="Twitter"
+            link="https://x.com/CTICornell"
+            shortenedLink="@CTICornell"
+          />
+          <ContactItemComponent
+            name="Instagram"
+            link="https://www.instagram.com/cornellteaching"
+            shortenedLink="@cornellteaching"
+          />
+        </ul>
+      </div>
+    </div>
   </div>
 </Layout>
