@@ -22,8 +22,9 @@ const { objData = "", class: className } = Astro.props;
   import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
   import checkerFrag from "../shaders/checker.frag?raw";
   import { createHeatmapGradientCanvas } from "../utils/heatmapGradient";
+  import { OrbitControls } from "three/examples/jsm/Addons.js";
 
-  function initObjViewer(container: HTMLElement) {
+  const initObjViewer = (container: HTMLElement) => {
     const canvas = container.querySelector(".obj-viewer") as HTMLCanvasElement;
     const objData = container.dataset.obj ?? "";
 
@@ -46,6 +47,15 @@ const { objData = "", class: className } = Astro.props;
     camera.position.z = 5;
     camera.position.y = -1;
     camera.lookAt(0, 0.1, 0);
+
+    const controls = new OrbitControls(camera, canvas);
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 1;
+    controls.enableDamping = true;
+    controls.minPolarAngle = Math.PI * (1 / 2 - 1 / 8);
+    controls.maxPolarAngle = Math.PI * (1 / 2 + 1 / 16);
+
+    controls.update();
 
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
     renderer.setSize(width, height);
@@ -142,8 +152,10 @@ const { objData = "", class: className } = Astro.props;
       requestAnimationFrame(animate);
       time += 0.01;
 
-      object.rotation.y =
-        Math.sin(time * 0.1 + (randomRotationOffset * Math.PI) / 8) * 0.5;
+      controls.update();
+
+      // object.rotation.y =
+      //   Math.sin(time * 0.1 + (randomRotationOffset * Math.PI) / 8) * 0.5;
 
       ditherPass.uniforms.uTime.value = time;
       ditherPass.uniforms.tBayer.value = bayerTexture;
@@ -169,7 +181,7 @@ const { objData = "", class: className } = Astro.props;
     });
 
     resizeObserver.observe(container);
-  }
+  };
 
   document
     .querySelectorAll<HTMLElement>(".obj-viewer-container")
