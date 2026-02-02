@@ -11,7 +11,9 @@ const { objData = "", class: className } = Astro.props;
   class:list={["obj-viewer-container relative", className]}
   data-obj={objData}
 >
-  <canvas class="obj-viewer w-full h-full [image-rendering:pixelated]"></canvas>
+  <canvas
+    class="obj-viewer w-full h-full [image-rendering:pixelated] cursor-grab active:cursor-grabbing"
+  ></canvas>
 </div>
 
 <script>
