@@ -4,6 +4,7 @@ import ProjectSection from "../components/ProjectSection.astro";
 import HeatmapBanner from "../components/HeatmapBanner.astro";
 import ObjViewer from "../components/ObjViewer.astro";
 import physicsModelData from "../assets/physicsmodel.obj?raw";
+import spectaclesData from "../assets/spectacles.obj?raw";
 import "../assets/global.css";
 ---
 
@@ -61,13 +62,13 @@ import "../assets/global.css";
       </Fragment>
     </ProjectSection>
     <ProjectSection>
-      <Fragment slot="title">Kirby Engine</Fragment>
+      <Fragment slot="title">Spectacles</Fragment>
       <Fragment slot="description">
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum illum
         asperiores adipisci quae accusantium. Harum molestias dolorem?
       </Fragment>
       <Fragment slot="content">
-        <ObjViewer class="w-full h-full" />
+        <ObjViewer class="w-full h-full" objData={spectaclesData} />
       </Fragment>
       <Fragment slot="button">
         <button
