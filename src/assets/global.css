@@ -22,4 +22,25 @@
         font-optical-sizing: auto;
         font-style: normal;
     }
+
+    .button {
+        padding: 0.25rem 1.5rem;
+        background: linear-gradient(180deg,rgba(255, 255, 255, 1) 0%, rgb(247, 247, 247) 100%);        
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--color-neutral-200);
+        font-size: var(--text-sm);
+        box-shadow: var(--shadow-xs);
+        transition: 0.05s all;
+        cursor: pointer;
+    }
+
+    .button:hover {
+        background: linear-gradient(180deg,rgba(255, 255, 255, 1) 0%, rgb(242, 242, 242) 100%);
+        border-color: var(--color-neutral-300);
+        /* background: var(--color-neutral-50); */
+    }
+
+    .button:active {
+        background: linear-gradient(180deg,rgba(255, 255, 255, 1) 0%, rgb(230, 230, 230) 100%);        
+    }
 }
