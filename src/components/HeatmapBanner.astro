@@ -2,7 +2,7 @@
   import * as twgl from "twgl.js";
   import vertex from "../shaders/passthrough.vert?raw";
   import fragment from "../shaders/source.frag?raw";
-  import checkerFrag from "../shaders/checker.frag?raw";
+  import checkerFrag from "../shaders/bannerDither.frag?raw";
   import { createHeatmapGradientCanvas } from "../utils/heatmapGradient";
 
   const heatmapBanner = document.getElementById(
@@ -151,7 +151,7 @@
     uTime: 0,
     uResolution: [width, height],
     uDitherSize: 1,
-    uNumColors: 8,
+    uNumColors: 0,
     uIntensity: 0.3,
   };
 

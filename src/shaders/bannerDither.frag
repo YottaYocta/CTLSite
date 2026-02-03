@@ -34,7 +34,13 @@ void main() {
 
     gl_FragColor = vec4(
         dither(
-            mix(color.rgb, vec3(1.0), pow(uv.x, 3.0)), 
+            mix(
+                color.rgb + vec3(
+                    max(min(log((2.0 * uv.x + (1.0 - uv.y)) / 1.5), 0.0), -0.5)
+                ), 
+                vec3(1.0), 
+                pow((2.0 * uv.x + 1.0 - uv.y) / 3.0, 3.0)
+            ),
             threshold
     ), 1.0);
 

@@ -18,8 +18,16 @@
   </div>
 
   <div
-    class="h-96 col-start-3 col-span-4 row-start-1 bg-neutral-50 rounded-lg flex flex-col gap-4 p-4"
+    class="h-96 col-start-3 col-span-4 row-start-1 bg-neutral-50 rounded-lg flex flex-col gap-4 p-4 relative"
   >
+    <div
+      class="absolute top-4 right-4 z-10 bg-white border border-neutral-100 w-8 h-8 rounded-xl overflow-clip shadow-xs"
+    >
+      <span
+        class="w-full h-full flex items-center justify-center hover:bg-neutral-100"
+        >i</span
+      >
+    </div>
     <div class="flex gap-4">
       <slot name="button" />
     </div>

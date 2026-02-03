@@ -2,11 +2,11 @@ export type ColorStop = { position: number; color: string };
 
 export const HEATMAP_GRADIENT_STOPS: ColorStop[] = [
   { position: 0, color: "#413FC5" },    // dark blue
-  { position: 0.4, color: "#26B8FF" },  // light blue
+  { position: 0.3, color: "#26B8FF" },  // light blue
   { position: 0.5, color: "#40FFAB" },  // green
   { position: 0.6, color: "#F1FF5B" },  // yellow
-  { position: 0.7, color: "#FF8B21" }, // orange
-  { position: 0.99, color: "#FFF" },    // white
+  { position: 0.75, color: "#FF8B21" }, // orange
+  { position: 0.9, color: "#FFF" },    // white
 ];
 
 /**

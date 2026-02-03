@@ -22,7 +22,7 @@ const { objData = "", class: className } = Astro.props;
   import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
   import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
   import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
-  import checkerFrag from "../shaders/checker.frag?raw";
+  import checkerFrag from "../shaders/objectDither.frag?raw";
   import { createHeatmapGradientCanvas } from "../utils/heatmapGradient";
   import { OrbitControls } from "three/examples/jsm/Addons.js";
 
