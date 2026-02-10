@@ -9,7 +9,7 @@ const { credits } = Astro.props;
 ---
 
 <div
-  class="grid grid-cols-6 w-full max-w-4xl h-min py-12 gap-8 gap-y-12 open-sans"
+  class="grid grid-cols-6 w-full max-w-4xl h-min py-12 gap-12 gap-y-12 open-sans"
 >
   <div
     class="flex flex-col h-full w-full items-start justify-center gap-12 col-start-1 row-start-1 col-span-2"
@@ -18,7 +18,7 @@ const { credits } = Astro.props;
       <slot name="title" />
     </h3>
 
-    <p class="leading-8 text-neutral-500">
+    <p class="text-neutral-500 leading-7">
       <slot name="description" />
     </p>
   </div>
