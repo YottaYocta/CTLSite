@@ -23,20 +23,22 @@
         font-style: normal;
     }
 
+
     .button {
         padding: 0.25rem 1.5rem;
         background: white;
-        border-radius: var(--radius-sm);
+        border-radius: 1000rem;
         border: 1px solid var(--color-neutral-100);
         font-size: var(--text-sm);
         box-shadow: var(--shadow-xs);
-        transition: 0.05s all;
+        transition: 0.1s all ease-out;
         cursor: pointer;
     }
 
     .button:hover {
         background: var(--color-neutral-50);
         border-color: var(--color-neutral-200);
+        transition: 0.02s all ease-out;
     }
 
     .button:active {
