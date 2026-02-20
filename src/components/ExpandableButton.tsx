@@ -13,7 +13,7 @@ export const ExpandableButton: FC<ExpandableButtonProps> = ({ text }) => {
         onClick={() => setIsOpen(!isOpen)}
       >
         <span
-          className={`${isOpen ? "rotate-0" : "rotate-45"} transition-transform flex justify-center items-center`}
+          className={`${isOpen ? "rotate-0" : "-rotate-45"} transition-transform flex justify-center items-center duration-300`}
         >
           <svg
             className="w-4 h-4 text-neutral-500"
@@ -32,10 +32,10 @@ export const ExpandableButton: FC<ExpandableButtonProps> = ({ text }) => {
       <div
         className={
           (isOpen
-            ? "w-52 h-32 right-12 top-0 shadow-xs bg-white"
+            ? "w-52 h-32 right-12 top-4 shadow-xs bg-white"
             : "w-8 h-8  right-0 top-0 border-0 bg-neutral-50") +
           " " +
-          "transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] kode-mono absolute overflow-clip z-0 p-4 flex items-center border pointer-events-none border-neutral-100 rounded-2xl"
+          "transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] kode-mono absolute overflow-clip z-0 p-4 flex items-center border pointer-events-none border-neutral-100 rounded-2xl"
         }
       >
         <span
