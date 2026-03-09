@@ -14,7 +14,7 @@ import "../assets/global.css";
   <div
     class="min-w-full min-h-full flex flex-col items-center justify-start py-8 open-sans"
   >
-    <div class="flex flex-col gap-12 mb-8">
+    <div class="flex flex-col gap-12 my-16">
       <SiteGrid class="pt-8 gap-20">
         <Fragment slot="left">
           <div class="h-full justify-end flex flex-col">
@@ -29,7 +29,7 @@ import "../assets/global.css";
           </div>
         </Fragment>
         <Fragment slot="right">
-          <div class="relative overflow-clip h-36 rounded-sm">
+          <div class="relative overflow-clip h-36">
             <HeatmapBanner />
           </div>
         </Fragment>
@@ -70,51 +70,52 @@ import "../assets/global.css";
       </SiteGrid>
     </div>
     <div
-      class="grid grid-cols-6 w-full max-w-4xl h-min border-b border-neutral-300 mt-4"
+      class="flex max-w-7xl h-min justify-center items-center mt-16 border-neutral-300 border-b border-t w-full"
     >
-      <h2
-        class="flex flex-col col-start-1 col-span-full w-full kode-mono pb-2 text-neutral-500"
-      >
+      <h2 class="flex flex-col col-start-1 kode-mono py-2 text-neutral-500">
         Projects
       </h2>
     </div>
-    <ProjectSection credits={["Suriyash Malviya", "Grace Jin"]} client:visible>
-      <Fragment slot="title">Physics EM Wave</Fragment>
-      <Fragment slot="description">
-        Built in partnership with Cornell's PHYS 1101 class. An interactive, 3D
-        visualization tool for eletrical and magnetic fields
-      </Fragment>
-      <Fragment slot="content">
-        <ObjViewer class="w-full h-full" objData={physicsModelData} />
-      </Fragment>
-      <Fragment slot="button">
-        <a href="#">
-          <button class="button kode-mono">Open Project</button>
-        </a>
-      </Fragment>
-    </ProjectSection>
-    <ProjectSection credits={["George Margono", "Aiswarya Senthil"]}>
-      <Fragment slot="title">Spectacles</Fragment>
-      <Fragment slot="description">
-        A series of ongoing experiments with Snap Inc.'s Spectacle AR Glasses,
-        with applications ranging from real-time translation and language
-        learning.
-      </Fragment>
-      <Fragment slot="content">
-        <ObjViewer class="w-full h-full" objData={spectaclesData} />
-      </Fragment>
-      <Fragment slot="button">
-        <a href="#">
-          <button class="button kode-mono">Open Project</button>
-        </a>
-      </Fragment>
-    </ProjectSection>
-    <div
-      class="grid grid-cols-6 w-full max-w-4xl h-min border-b border-neutral-300 mt-4"
-    >
-      <h2
-        class="flex flex-col col-start-1 col-span-full w-full kode-mono pb-2 text-neutral-400"
+    <div class="py-16">
+      <ProjectSection
+        credits={["Suriyash Malviya", "Grace Jin"]}
+        client:visible
       >
+        <Fragment slot="title">Physics EM Wave</Fragment>
+        <Fragment slot="description">
+          Built in partnership with Cornell's PHYS 1101 class. An interactive,
+          3D visualization tool for eletrical and magnetic fields
+        </Fragment>
+        <Fragment slot="content">
+          <ObjViewer class="w-full h-full" objData={physicsModelData} />
+        </Fragment>
+        <Fragment slot="button">
+          <a href="#">
+            <button class="button kode-mono">Open Project</button>
+          </a>
+        </Fragment>
+      </ProjectSection>
+      <ProjectSection credits={["George Margono", "Aiswarya Senthil"]}>
+        <Fragment slot="title">Spectacles</Fragment>
+        <Fragment slot="description">
+          A series of ongoing experiments with Snap Inc.'s Spectacle AR Glasses,
+          with applications ranging from real-time translation and language
+          learning.
+        </Fragment>
+        <Fragment slot="content">
+          <ObjViewer class="w-full h-full" objData={spectaclesData} />
+        </Fragment>
+        <Fragment slot="button">
+          <a href="#">
+            <button class="button kode-mono">Open Project</button>
+          </a>
+        </Fragment>
+      </ProjectSection>
+    </div>
+    <div
+      class="flex max-w-7xl h-min justify-center items-center mt-16 border-neutral-300 bg-neutra border-b border-t w-full"
+    >
+      <h2 class="flex flex-col col-start-1 kode-mono py-2 text-neutral-500">
         Collaborate
       </h2>
     </div>
