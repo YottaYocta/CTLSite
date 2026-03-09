@@ -1,0 +1,374 @@
+---
+import Layout from "../layouts/Layout.astro";
+import SiteGrid from "../components/SiteGrid.astro";
+import { ExpandableButton } from "../components/ExpandableButton";
+import ContactItemComponent from "../components/ContactItemComponent.astro";
+import "../assets/global.css";
+
+const sectionClass =
+  "w-full max-w-4xl border-b border-neutral-200 pb-2 kode-mono text-neutral-400 text-xs tracking-widest uppercase";
+---
+
+<Layout>
+  <div
+    class="min-w-full min-h-full flex flex-col items-center justify-start py-16 px-8 open-sans"
+  >
+    <div class="w-full max-w-4xl flex flex-col gap-16">
+      <!-- Header -->
+      <div class="flex flex-col gap-2">
+        <p class="kode-mono text-xs text-neutral-400 tracking-widest uppercase">
+          CTL
+        </p>
+        <h1 class="eb-garamond text-5xl text-neutral-900">Design System</h1>
+        <p class="text-neutral-500 leading-7 mt-2">
+          Reference for all typographic styles, color tokens, layout components,
+          and interactive elements used across the site.
+        </p>
+      </div>
+
+      <!-- Typography -->
+      <div class="flex flex-col gap-8">
+        <p class={sectionClass}>Typography</p>
+
+        <SiteGrid class="gap-20">
+          <Fragment slot="left">
+            <div class="flex flex-col gap-1">
+              <p class="kode-mono text-xs text-neutral-400">eb-garamond</p>
+              <p class="text-neutral-500 text-sm leading-6">
+                Headings & display text. Serif, optical sizing.
+              </p>
+            </div>
+          </Fragment>
+          <Fragment slot="right">
+            <div class="flex flex-col gap-4">
+              <h1 class="eb-garamond text-5xl text-neutral-900">
+                Display / H1
+              </h1>
+              <h2 class="eb-garamond text-4xl text-neutral-800">
+                Section / H2
+              </h2>
+              <h3 class="eb-garamond text-3xl text-neutral-800">
+                Subsection / H3
+              </h3>
+              <p class="eb-garamond text-xl italic text-neutral-600">
+                Italic variant
+              </p>
+            </div>
+          </Fragment>
+        </SiteGrid>
+
+        <SiteGrid class="gap-20">
+          <Fragment slot="left">
+            <div class="flex flex-col gap-1">
+              <p class="kode-mono text-xs text-neutral-400">open-sans</p>
+              <p class="text-neutral-500 text-sm leading-6">
+                Body copy, descriptions, UI labels.
+              </p>
+            </div>
+          </Fragment>
+          <Fragment slot="right">
+            <div class="flex flex-col gap-4">
+              <p class="open-sans text-base text-neutral-800 leading-7">
+                Body — We build exploratory projects that push the boundaries of
+                Artificial Intelligence, Digital Storytelling, and Extended
+                Reality.
+              </p>
+              <p class="open-sans text-sm text-neutral-500 leading-6">
+                Small — Supporting text and secondary descriptions.
+              </p>
+              <p class="open-sans text-xs text-neutral-400 leading-5">
+                XSmall — Metadata, captions, timestamps.
+              </p>
+              <p class="open-sans font-bold text-base text-neutral-800">
+                Bold emphasis
+              </p>
+            </div>
+          </Fragment>
+        </SiteGrid>
+
+        <SiteGrid class="gap-20">
+          <Fragment slot="left">
+            <div class="flex flex-col gap-1">
+              <p class="kode-mono text-xs text-neutral-400">kode-mono</p>
+              <p class="text-neutral-500 text-sm leading-6">
+                Section labels, tags, monospaced UI.
+              </p>
+            </div>
+          </Fragment>
+          <Fragment slot="right">
+            <div class="flex flex-col gap-4">
+              <p class="kode-mono text-base text-neutral-800">Projects</p>
+              <p class="kode-mono text-sm text-neutral-500">Collaborate</p>
+              <p
+                class="kode-mono text-xs text-neutral-400 tracking-widest uppercase"
+              >
+                Section label / tag
+              </p>
+              <p class="kode-mono text-sm text-neutral-600">Open Project</p>
+            </div>
+          </Fragment>
+        </SiteGrid>
+      </div>
+
+      <!-- Colors -->
+      <div class="flex flex-col gap-8">
+        <p class={sectionClass}>Colors</p>
+
+        <SiteGrid class="gap-20">
+          <Fragment slot="left">
+            <div class="flex flex-col gap-1">
+              <p class="kode-mono text-xs text-neutral-400">neutrals</p>
+              <p class="text-neutral-500 text-sm leading-6">
+                Primary UI palette. Used for text, borders, and backgrounds.
+              </p>
+            </div>
+          </Fragment>
+          <Fragment slot="right">
+            <div class="flex flex-wrap gap-3">
+              <div class="flex flex-col items-center gap-1">
+                <div
+                  class="w-16 rounded-sm bg-white border border-neutral-200 h-16"
+                >
+                </div>
+                <p class="kode-mono text-xs text-neutral-400">white</p>
+              </div>
+              <div class="flex flex-col items-center gap-1 w-16">
+                <div class="w-16 rounded-sm bg-neutral-50 min-h-16"></div>
+                <p class="kode-mono text-xs text-neutral-400">50</p>
+              </div>
+              <div class="flex flex-col items-center gap-1">
+                <div class="w-16 h-16 rounded-sm bg-neutral-100"></div>
+                <p class="kode-mono text-xs text-neutral-400">100</p>
+              </div>
+              <div class="flex flex-col items-center gap-1">
+                <div class="w-16 h-16 rounded-sm bg-neutral-200"></div>
+                <p class="kode-mono text-xs text-neutral-400">200</p>
+              </div>
+              <div class="flex flex-col items-center gap-1">
+                <div class="w-16 h-16 rounded-sm bg-neutral-300"></div>
+                <p class="kode-mono text-xs text-neutral-400">300</p>
+              </div>
+              <div class="flex flex-col items-center gap-1">
+                <div class="w-16 h-16 rounded-sm bg-neutral-400"></div>
+                <p class="kode-mono text-xs text-neutral-400">400</p>
+              </div>
+              <div class="flex flex-col items-center gap-1">
+                <div class="w-16 h-16 rounded-sm bg-neutral-500"></div>
+                <p class="kode-mono text-xs text-neutral-400">500</p>
+              </div>
+              <div class="flex flex-col items-center gap-1">
+                <div class="w-16 h-16 rounded-sm bg-neutral-600"></div>
+                <p class="kode-mono text-xs text-neutral-400">600</p>
+              </div>
+              <div class="flex flex-col items-center gap-1">
+                <div class="w-16 h-16 rounded-sm bg-neutral-700"></div>
+                <p class="kode-mono text-xs text-neutral-400">700</p>
+              </div>
+              <div class="flex flex-col items-center gap-1">
+                <div class="w-16 h-16 rounded-sm bg-neutral-800"></div>
+                <p class="kode-mono text-xs text-neutral-400">800</p>
+              </div>
+              <div class="flex flex-col items-center gap-1">
+                <div class="w-16 h-16 rounded-sm bg-neutral-900"></div>
+                <p class="kode-mono text-xs text-neutral-400">900</p>
+              </div>
+            </div>
+          </Fragment>
+        </SiteGrid>
+
+        <SiteGrid class="gap-20">
+          <Fragment slot="left">
+            <div class="flex flex-col gap-1">
+              <p class="kode-mono text-xs text-neutral-400">accent</p>
+              <p class="text-neutral-500 text-sm leading-6">
+                Cornell red. Used sparingly for brand emphasis.
+              </p>
+            </div>
+          </Fragment>
+          <Fragment slot="right">
+            <div class="flex flex-wrap gap-3">
+              <div class="flex flex-col items-center gap-1">
+                <div class="w-16 h-16 rounded-sm bg-red-100"></div>
+                <p class="kode-mono text-xs text-neutral-400">100</p>
+              </div>
+              <div class="flex flex-col items-center gap-1">
+                <div class="w-16 h-16 rounded-sm bg-red-300"></div>
+                <p class="kode-mono text-xs text-neutral-400">300</p>
+              </div>
+              <div class="flex flex-col items-center gap-1">
+                <div class="w-16 h-16 rounded-sm bg-red-500"></div>
+                <p class="kode-mono text-xs text-neutral-400">500</p>
+              </div>
+              <div class="flex flex-col items-center gap-1">
+                <div class="w-16 h-16 rounded-sm bg-red-700"></div>
+                <p class="kode-mono text-xs text-neutral-400">700</p>
+              </div>
+              <div class="flex flex-col items-center gap-1">
+                <div class="w-16 h-16 rounded-sm bg-red-900"></div>
+                <p class="kode-mono text-xs text-neutral-400">900</p>
+              </div>
+            </div>
+          </Fragment>
+        </SiteGrid>
+      </div>
+
+      <!-- Buttons -->
+      <div class="flex flex-col gap-8">
+        <p class={sectionClass}>Buttons</p>
+
+        <SiteGrid class="gap-20">
+          <Fragment slot="left">
+            <div class="flex flex-col gap-1">
+              <p class="kode-mono text-xs text-neutral-400">.button</p>
+              <p class="text-neutral-500 text-sm leading-6">
+                Pill-shaped, white background, subtle border and shadow. Used
+                for primary actions.
+              </p>
+            </div>
+          </Fragment>
+          <Fragment slot="right">
+            <div class="flex flex-wrap items-center gap-4">
+              <button class="button kode-mono">Open Project</button>
+              <button class="button kode-mono">Consider Applying</button>
+              <button
+                class="button kode-mono"
+                disabled
+                style="opacity:0.4;cursor:not-allowed;">Disabled</button
+              >
+            </div>
+          </Fragment>
+        </SiteGrid>
+
+        <SiteGrid class="gap-20">
+          <Fragment slot="left">
+            <div class="flex flex-col gap-1">
+              <p class="kode-mono text-xs text-neutral-400">ExpandableButton</p>
+              <p class="text-neutral-500 text-sm leading-6">
+                Icon button that reveals a credits panel on click. Used on
+                project cards.
+              </p>
+            </div>
+          </Fragment>
+          <Fragment slot="right">
+            <div class="flex items-start gap-8">
+              <div class="flex flex-col gap-2 items-start">
+                <p class="text-xs text-neutral-400 kode-mono">collapsed</p>
+                <ExpandableButton
+                  text={["Jane Doe", "John Smith"]}
+                  client:load
+                />
+              </div>
+            </div>
+          </Fragment>
+        </SiteGrid>
+      </div>
+
+      <!-- Layout -->
+      <div class="flex flex-col gap-8">
+        <p class={sectionClass}>Layout</p>
+
+        <SiteGrid class="gap-20">
+          <Fragment slot="left">
+            <div class="flex flex-col gap-1">
+              <p class="kode-mono text-xs text-neutral-400">SiteGrid</p>
+              <p class="text-neutral-500 text-sm leading-6">
+                6-column grid, max-w-4xl, full width. Provides a <span
+                  class="kode-mono text-xs">left</span
+                > slot (col-span-2) and a <span class="kode-mono text-xs"
+                  >right</span
+                > slot (col-span-4). Pass extra Tailwind classes via <span
+                  class="kode-mono text-xs">class</span
+                > prop.
+              </p>
+            </div>
+          </Fragment>
+          <Fragment slot="right">
+            <div
+              class="w-full border border-dashed border-neutral-300 p-4 flex flex-col gap-2"
+            >
+              <p class="kode-mono text-xs text-neutral-400 mb-2">
+                live example
+              </p>
+              <SiteGrid class="gap-4">
+                <Fragment slot="left">
+                  <div
+                    class="bg-neutral-100 h-16 flex items-center justify-center rounded-sm"
+                  >
+                    <p class="kode-mono text-xs text-neutral-500">
+                      left (2 cols)
+                    </p>
+                  </div>
+                </Fragment>
+                <Fragment slot="right">
+                  <div
+                    class="bg-neutral-100 h-16 flex items-center justify-center rounded-sm"
+                  >
+                    <p class="kode-mono text-xs text-neutral-500">
+                      right (4 cols)
+                    </p>
+                  </div>
+                </Fragment>
+              </SiteGrid>
+            </div>
+          </Fragment>
+        </SiteGrid>
+
+        <SiteGrid class="gap-20">
+          <Fragment slot="left">
+            <div class="flex flex-col gap-1">
+              <p class="kode-mono text-xs text-neutral-400">Section divider</p>
+              <p class="text-neutral-500 text-sm leading-6">
+                Full-width border-bottom header used to label page sections.
+              </p>
+            </div>
+          </Fragment>
+          <Fragment slot="right">
+            <div class="grid grid-cols-6 w-full border-b border-neutral-300">
+              <h2 class="col-span-full kode-mono pb-2 text-neutral-500">
+                Section Label
+              </h2>
+            </div>
+          </Fragment>
+        </SiteGrid>
+      </div>
+
+      <!-- Components -->
+      <div class="flex flex-col gap-8">
+        <p class={sectionClass}>Components</p>
+
+        <SiteGrid class="gap-20">
+          <Fragment slot="left">
+            <div class="flex flex-col gap-1">
+              <p class="kode-mono text-xs text-neutral-400">
+                ContactItemComponent
+              </p>
+              <p class="text-neutral-500 text-sm leading-6">
+                List row with a label on the left and a monospaced link on the
+                right. Hover highlights the row.
+              </p>
+            </div>
+          </Fragment>
+          <Fragment slot="right">
+            <div class="bg-neutral-50 flex flex-col">
+              <ContactItemComponent
+                name="Email"
+                link="mailto:cti@cornell.edu"
+                shortenedLink="cti@cornell.edu"
+              />
+              <ContactItemComponent
+                name="Twitter"
+                link="https://x.com/CTICornell"
+                shortenedLink="@CTICornell"
+              />
+              <ContactItemComponent
+                name="Instagram"
+                link="https://www.instagram.com/cornellteaching"
+                shortenedLink="@cornellteaching"
+              />
+            </div>
+          </Fragment>
+        </SiteGrid>
+      </div>
+    </div>
+  </div>
+</Layout>
