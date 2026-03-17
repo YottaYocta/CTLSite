@@ -1,6 +1,5 @@
 ---
 import { ExpandableButton } from "./ExpandableButton";
-import SiteGrid from "./SiteGrid.astro";
 
 interface Props {
   credits: string[];
@@ -9,30 +8,24 @@ interface Props {
 const { credits } = Astro.props;
 ---
 
-<SiteGrid class="py-12 gap-20 gap-y-12 open-sans">
-  <Fragment slot="left">
-    <div class="flex flex-col h-full w-full items-start justify-center gap-12">
-      <h3 class="flex flex-col text-3xl eb-garamond text-neutral-800">
-        <slot name="title" />
-      </h3>
-
-      <p class="text-neutral-500 leading-7">
-        <slot name="description" />
-      </p>
+<div class="flex gap-8 py-12 open-sans w-full">
+  <div class="flex-1 h-min bg-[#f6f6f6] flex flex-col gap-4 p-4 relative">
+    <div class="absolute bottom-4 right-4 z-10">
+      <ExpandableButton text={credits} client:load />
     </div>
-  </Fragment>
-
-  <Fragment slot="right">
-    <div class="h-96 bg-[#f6f6f6] flex flex-col gap-4 p-4 relative">
-      <div class="absolute right-4 top-4 z-10">
-        <ExpandableButton text={credits} client:load />
-      </div>
-      <div class="flex gap-4">
-        <slot name="button" />
-      </div>
-      <div class="h-full w-full bg-white border border-neutral-100 overflow-clip">
-        <slot name="content" />
-      </div>
+    <div class="flex-1 w-full bg-white border border-neutral-100 overflow-clip">
+      <slot name="content" />
     </div>
-  </Fragment>
-</SiteGrid>
+    <div class="flex gap-4 shrink-0">
+      <slot name="button" />
+    </div>
+  </div>
+  <div class="w-72 flex flex-col gap-8 shrink-0">
+    <h3 class="text-xl text-neutral-800">
+      <slot name="title" />
+    </h3>
+    <p class="text-neutral-500 leading-7">
+      <slot name="description" />
+    </p>
+  </div>
+</div>

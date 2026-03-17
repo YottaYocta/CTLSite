@@ -158,8 +158,8 @@ const { objData = "", class: className } = Astro.props;
 
       controls.update();
 
-      // object.rotation.y =
-      //   Math.sin(time * 0.1 + (randomRotationOffset * Math.PI) / 8) * 0.5;
+      object.rotation.y =
+        Math.sin(time * 0.1 + (randomRotationOffset * Math.PI) / 8) * 0.5;
 
       ditherPass.uniforms.uTime.value = time;
       ditherPass.uniforms.tBayer.value = bayerTexture;

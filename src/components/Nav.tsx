@@ -24,7 +24,7 @@ export const Nav = () => {
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-white border-b border-neutral-200 flex justify-center">
-      <div className="grid grid-cols-6 w-full max-w-4xl h-min py-2">
+      <div className="flex justify-between w-full max-w-4xl h-min py-2">
         <div className="flex flex-col col-start-1 col-span-2 row-start-1">
           <a
             href="/"

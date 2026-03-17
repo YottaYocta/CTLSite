@@ -1,12 +1,10 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import ProjectSection from "../components/ProjectSection.astro";
-import HeatmapBanner from "../components/HeatmapBanner.astro";
 import ObjViewer from "../components/ObjViewer.astro";
-import SiteGrid from "../components/SiteGrid.astro";
 import physicsModelData from "../assets/physicsmodel.obj?raw";
 import spectaclesData from "../assets/spectacles.obj?raw";
-import ContactItemComponent from "../components/ContactItemComponent.astro";
+import kirbyData from "../assets/kirby.obj?raw";
 import "../assets/global.css";
 ---
 
@@ -14,56 +12,6 @@ import "../assets/global.css";
   <div
     class="min-w-full min-h-full flex flex-col items-center justify-start py-8 open-sans"
   >
-    <div class="flex flex-col gap-12 mb-8">
-      <SiteGrid class="pt-8 gap-20">
-        <Fragment slot="left">
-          <div class="h-full justify-end flex flex-col">
-            <h1 class="flex flex-col text-4xl eb-garamond translate-y-2">
-              <span>Work</span>
-            </h1>
-          </div>
-        </Fragment>
-        <Fragment slot="right">
-          <div class="relative overflow-clip h-36">
-            <HeatmapBanner />
-          </div>
-        </Fragment>
-      </SiteGrid>
-      <SiteGrid class="gap-20">
-        <Fragment slot="left">
-          <div></div>
-        </Fragment>
-        <Fragment slot="right">
-          <div class="flex flex-col gap-12">
-            <div class="flex-col flex gap-6">
-              <p class="leading-7 text-neutral-500">
-                We build exploratory projects that push the boundaries of <span
-                  class="font-bold">Artificial Intelligence</span
-                >, <span class="font-bold">Digital Storytelling</span>, and <span
-                  class="font-bold">Extended Reality</span
-                >. Student directed since 2008.
-              </p>
-              <p class="leading-7 text-neutral-500">
-                We have open student work-study roles for people who would
-                rather build something than read about it. Faculty are also
-                welcome; we partner on course resources and custom educational
-                tools.
-              </p>
-            </div>
-            <div class="flex gap-4">
-              <button
-                class="button bg-blue-700 border-blue-400 hover:bg-blue-600 text-white kode-mono w-min text-nowrap"
-                >Apply for Student Role</button
-              >
-              <button
-                class="button kode-mono w-min text-nowrap border-neutral-300"
-                >Faculty Collaboration</button
-              >
-            </div>
-          </div>
-        </Fragment>
-      </SiteGrid>
-    </div>
     <div
       class="grid grid-cols-6 w-full max-w-4xl h-min border-neutral-300 mt-4"
     >
@@ -73,83 +21,57 @@ import "../assets/global.css";
         Projects
       </h2>
     </div>
-    <ProjectSection credits={["Suriyash Malviya", "Grace Jin"]} client:visible>
-      <Fragment slot="title">Physics EM Wave</Fragment>
-      <Fragment slot="description">
-        Built in partnership with Cornell's PHYS 1101 class. An interactive, 3D
-        visualization tool for eletrical and magnetic fields
-      </Fragment>
-      <Fragment slot="content">
-        <ObjViewer class="w-full h-full" objData={physicsModelData} />
-      </Fragment>
-      <Fragment slot="button">
-        <a href="#">
-          <button class="button kode-mono">Open Project</button>
-        </a>
-      </Fragment>
-    </ProjectSection>
-    <ProjectSection credits={["George Margono", "Aiswarya Senthil"]}>
-      <Fragment slot="title">Spectacles</Fragment>
-      <Fragment slot="description">
-        A series of ongoing experiments with Snap Inc.'s Spectacle AR Glasses,
-        with applications ranging from real-time translation and language
-        learning.
-      </Fragment>
-      <Fragment slot="content">
-        <ObjViewer class="w-full h-full" objData={spectaclesData} />
-      </Fragment>
-      <Fragment slot="button">
-        <a href="#">
-          <button class="button kode-mono">Open Project</button>
-        </a>
-      </Fragment>
-    </ProjectSection>
-    <div
-      class="grid grid-cols-6 w-full max-w-4xl h-min border-b border-neutral-300 mt-4"
-    >
-      <h2
-        class="flex flex-col col-start-1 col-span-full w-full kode-mono pb-2 text-neutral-400"
+    <div class="w-full max-w-4xl">
+      <ProjectSection
+        credits={["Suriyash Malviya", "Grace Jin"]}
+        client:visible
       >
-        Collaborate
-      </h2>
+        <Fragment slot="title">Physics EM Wave</Fragment>
+        <Fragment slot="description">
+          Built in partnership with Cornell's PHYS 1101 class. An interactive,
+          3D visualization tool for eletrical and magnetic fields
+        </Fragment>
+        <Fragment slot="content">
+          <ObjViewer class="w-full h-full" objData={physicsModelData} />
+        </Fragment>
+        <Fragment slot="button">
+          <a href="#">
+            <button class="button kode-mono">Open Project</button>
+          </a>
+        </Fragment>
+      </ProjectSection>
+      <ProjectSection credits={["George Margono", "Aiswarya Senthil"]}>
+        <Fragment slot="title">Spectacles</Fragment>
+        <Fragment slot="description">
+          A series of ongoing experiments with Snap Inc.'s Spectacle AR Glasses,
+          with applications ranging from real-time translation and language
+          learning.
+        </Fragment>
+        <Fragment slot="content">
+          <ObjViewer class="w-full h-full" objData={spectaclesData} />
+        </Fragment>
+        <Fragment slot="button">
+          <a href="#">
+            <button class="button kode-mono">Open Project</button>
+          </a>
+        </Fragment>
+      </ProjectSection>
+      <ProjectSection credits={["Kirby Engine Team"]}>
+        <Fragment slot="title">Kirby Engine</Fragment>
+        <Fragment slot="description">
+          A collaboration with Professor Brian Kirby to bring a virtual,
+          interactive model of a retired motor engine to an explorational
+          teaching tool
+        </Fragment>
+        <Fragment slot="content">
+          <ObjViewer class="w-full h-full" objData={kirbyData} />
+        </Fragment>
+        <Fragment slot="button">
+          <a href="#">
+            <button class="button kode-mono">Open Project</button>
+          </a>
+        </Fragment>
+      </ProjectSection>
     </div>
-    <SiteGrid class="pb-48 border-neutral-300 mt-4 py-16 gap-20">
-      <Fragment slot="left">
-        <div
-          class="h-full w-full items-start justify-center gap-12 flex flex-col"
-        >
-          <h3 class="flex flex-col text-3xl eb-garamond text-neutral-800">
-            Let's build something amazing together
-          </h3>
-        </div>
-      </Fragment>
-      <Fragment slot="right">
-        <div class="h-min bg-neutral-50 flex flex-col p-4 py-12">
-          <p class="px-8 pb-4">Reach out to us at:</p>
-          <ul>
-            <ContactItemComponent
-              name="Parent Site"
-              link="https://teaching.cornell.edu/learning-technologies/creative-technology-lab"
-              shortenedLink="teaching.cornell.edu"
-            />
-            <ContactItemComponent
-              name="Email"
-              link="mailto:cti@cornell.edu"
-              shortenedLink="cti@cornell.edu"
-            />
-            <ContactItemComponent
-              name="Twitter"
-              link="https://x.com/CTICornell"
-              shortenedLink="@CTICornell"
-            />
-            <ContactItemComponent
-              name="Instagram"
-              link="https://www.instagram.com/cornellteaching"
-              shortenedLink="@cornellteaching"
-            />
-          </ul>
-        </div>
-      </Fragment>
-    </SiteGrid>
   </div>
 </Layout>

@@ -3,7 +3,6 @@ import Layout from "../layouts/Layout.astro";
 import ProjectSection from "../components/ProjectSection.astro";
 import HeatmapBanner from "../components/HeatmapBanner.astro";
 import ObjViewer from "../components/ObjViewer.astro";
-import SiteGrid from "../components/SiteGrid.astro";
 import physicsModelData from "../assets/physicsmodel.obj?raw";
 import spectaclesData from "../assets/spectacles.obj?raw";
 import ContactItemComponent from "../components/ContactItemComponent.astro";
@@ -12,71 +11,52 @@ import "../assets/global.css";
 
 <Layout>
   <div
-    class="min-w-full min-h-full flex flex-col items-center justify-start py-8 open-sans"
+    class="min-w-full min-h-full flex flex-col items-center justify-start py-8 open-sans gap-24"
   >
-    <div class="flex flex-col gap-12 my-16">
-      <SiteGrid class="pt-8 gap-20">
-        <Fragment slot="left">
-          <div class="h-full justify-end flex flex-col">
-            <h1 class="flex flex-col text-4xl eb-garamond translate-y-2">
-              <span>Creative</span>
-              <span>Technology</span>
-              <span class="flex gap-2">
-                <span class="text-red-700">Lab</span>
-                <span class="italic">@Cornell</span>
-              </span>
-            </h1>
+    <div class="flex flex-col gap-16 w-full max-w-4xl my-16">
+      <div class="relative overflow-clip h-48">
+        <HeatmapBanner />
+      </div>
+      <div class="flex flex-col w-full h-min gap-12 px-4">
+        <div class="flex flex-col gap-2 pb-4 border-b border-neutral-200">
+          <h1 class="text-4xl eb-garamond">
+            Exploring Today, Building Tomorrow
+          </h1>
+          <div class="flex gap-2 text-lg">
+            <span>Creative Technology</span>
+            <span class="text-red-700">Lab</span>
+            <span class="italic opacity-50">@ Cornell</span>
           </div>
-        </Fragment>
-        <Fragment slot="right">
-          <div class="relative overflow-clip h-36">
-            <HeatmapBanner />
-          </div>
-        </Fragment>
-      </SiteGrid>
-      <SiteGrid class="gap-20">
-        <Fragment slot="left">
-          <div></div>
-        </Fragment>
-        <Fragment slot="right">
-          <div class="flex flex-col gap-12">
-            <div class="flex-col flex gap-6">
-              <p class="leading-7 text-neutral-500">
-                We build exploratory projects that push the boundaries of <span
-                  class="font-bold">Artificial Intelligence</span
-                >, <span class="font-bold">Digital Storytelling</span>, and <span
-                  class="font-bold">Extended Reality</span
-                >. Student directed since 2008.
-              </p>
-              <p class="leading-7 text-neutral-500">
-                We have open student work-study roles for people who would
-                rather build something than read about it. Faculty are also
-                welcome; we partner on course resources and custom educational
-                tools.
-              </p>
-            </div>
-            <div class="flex gap-4">
-              <button
-                class="button bg-blue-700 border-blue-400 hover:bg-blue-600 text-white kode-mono w-min text-nowrap"
-                >Apply for Student Role</button
-              >
-              <button
-                class="button kode-mono w-min text-nowrap border-neutral-300"
-                >Faculty Collaboration</button
-              >
-            </div>
-          </div>
-        </Fragment>
-      </SiteGrid>
+        </div>
+        <div class="flex gap-9">
+          <p class="leading-7 text-neutral-500 w-full">
+            We build exploratory projects that push the boundaries of Artificial
+            Intelligence, Digital Storytelling, and Extended Reality. Student
+            directed since 2008.
+          </p>
+          <p class="leading-7 text-neutral-500 w-full">
+            We have open student work-study roles for curious, self-driven
+            students. Faculty are also welcome; we partner on course resources
+            and custom educational tools.
+          </p>
+        </div>
+      </div>
+      <div class="flex gap-4 mt-8 px-4">
+        <button
+          class="button bg-blue-700 border-blue-400 hover:bg-blue-600 text-white kode-mono w-min text-nowrap"
+          >Apply for Student Role</button
+        >
+        <button class="button kode-mono w-min text-nowrap border-neutral-300"
+          >Faculty Collaboration</button
+        >
+      </div>
     </div>
-    <div
-      class="flex max-w-7xl h-min justify-center items-center mt-16 border-neutral-300 border-b border-t w-full"
-    >
-      <h2 class="flex flex-col col-start-1 kode-mono py-2 text-neutral-500">
-        Projects
-      </h2>
-    </div>
-    <div class="py-16">
+
+    <div class="flex flex-col w-full max-w-4xl">
+      <div class="flex flex-col gap-2 pb-4 border-b border-neutral-200 px-4">
+        <h2 class="text-2xl eb-garamond">Selected Projects</h2>
+      </div>
+
       <ProjectSection
         credits={["Suriyash Malviya", "Grace Jin"]}
         client:visible
@@ -112,50 +92,36 @@ import "../assets/global.css";
         </Fragment>
       </ProjectSection>
     </div>
-    <div
-      class="flex max-w-7xl h-min justify-center items-center mt-16 border-neutral-300 bg-neutra border-b border-t w-full"
-    >
-      <h2 class="flex flex-col col-start-1 kode-mono py-2 text-neutral-500">
-        Collaborate
-      </h2>
+
+    <div class="flex flex-col w-full max-w-4xl py-16 pb-48 gap-8">
+      <h3 class="text-3xl eb-garamond text-neutral-800">
+        Let's build something amazing together
+      </h3>
+      <div class="h-min bg-neutral-50 flex flex-col py-12 px-4">
+        <p class="px-8 pb-4">Reach out to us at:</p>
+        <ul>
+          <ContactItemComponent
+            name="Parent Site"
+            link="https://teaching.cornell.edu/learning-technologies/creative-technology-lab"
+            shortenedLink="teaching.cornell.edu"
+          />
+          <ContactItemComponent
+            name="Email"
+            link="mailto:cti@cornell.edu"
+            shortenedLink="cti@cornell.edu"
+          />
+          <ContactItemComponent
+            name="Twitter"
+            link="https://x.com/CTICornell"
+            shortenedLink="@CTICornell"
+          />
+          <ContactItemComponent
+            name="Instagram"
+            link="https://www.instagram.com/cornellteaching"
+            shortenedLink="@cornellteaching"
+          />
+        </ul>
+      </div>
     </div>
-    <SiteGrid class="pb-48 border-neutral-300 mt-4 py-16 gap-20">
-      <Fragment slot="left">
-        <div
-          class="h-full w-full items-start justify-center gap-12 flex flex-col"
-        >
-          <h3 class="flex flex-col text-3xl eb-garamond text-neutral-800">
-            Let's build something amazing together
-          </h3>
-        </div>
-      </Fragment>
-      <Fragment slot="right">
-        <div class="h-min bg-neutral-50 flex flex-col p-4 py-12">
-          <p class="px-8 pb-4">Reach out to us at:</p>
-          <ul>
-            <ContactItemComponent
-              name="Parent Site"
-              link="https://teaching.cornell.edu/learning-technologies/creative-technology-lab"
-              shortenedLink="teaching.cornell.edu"
-            />
-            <ContactItemComponent
-              name="Email"
-              link="mailto:cti@cornell.edu"
-              shortenedLink="cti@cornell.edu"
-            />
-            <ContactItemComponent
-              name="Twitter"
-              link="https://x.com/CTICornell"
-              shortenedLink="@CTICornell"
-            />
-            <ContactItemComponent
-              name="Instagram"
-              link="https://www.instagram.com/cornellteaching"
-              shortenedLink="@cornellteaching"
-            />
-          </ul>
-        </div>
-      </Fragment>
-    </SiteGrid>
   </div>
 </Layout>

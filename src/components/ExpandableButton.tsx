@@ -45,8 +45,8 @@ export const ExpandableButton: FC<ExpandableButtonProps> = ({ text }) => {
         >
           <p className="text-neutral-400">Credits:</p>
           <div className="flex flex-col gap-1">
-            {text.map((str) => (
-              <p>{str}</p>
+            {text.map((str, id) => (
+              <p key={id}>{str}</p>
             ))}
           </div>
         </span>
