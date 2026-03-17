@@ -4,7 +4,6 @@ const links = [
   { label: "$HOME", href: "/" },
   { label: "./Work", href: "/work" },
   { label: "./Team", href: "/team" },
-  { label: "./Contact", href: "/contact" },
 ];
 
 export const Nav = () => {

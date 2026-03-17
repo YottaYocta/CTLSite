@@ -1,0 +1,33 @@
+---
+import { ExpandableButton } from "./ExpandableButton";
+
+interface Props {
+  credits: string[];
+  image: string;
+  imageAlt?: string;
+}
+
+const { credits, image, imageAlt = "" } = Astro.props;
+---
+
+<div class="flex gap-8 py-12 open-sans w-full">
+  <div class="flex-1 h-min bg-[#f6f6f6] flex flex-col gap-4 p-4 relative">
+    <div class="absolute bottom-4 right-4 z-10">
+      <ExpandableButton text={credits} client:load />
+    </div>
+    <div class="flex-1 w-full bg-white border border-neutral-100 overflow-clip">
+      <img src={image} alt={imageAlt} class="w-full h-full object-cover" />
+    </div>
+    <div class="flex gap-4 shrink-0">
+      <slot name="button" />
+    </div>
+  </div>
+  <div class="w-72 flex flex-col gap-8 shrink-0">
+    <h3 class="text-xl text-neutral-800">
+      <slot name="title" />
+    </h3>
+    <p class="text-neutral-500 leading-7">
+      <slot name="description" />
+    </p>
+  </div>
+</div>
