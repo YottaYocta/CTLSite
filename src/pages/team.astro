@@ -1,40 +1,40 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import MemberCard from "../components/MemberCard.astro";
+import HeatmapBanner from "../components/HeatmapBanner.astro";
 import "../assets/global.css";
+import suriyashImage from "../assets/suriyash.png";
+import george from "../assets/george.png";
 ---
 
 <Layout>
   <div
-    class="min-w-full min-h-full flex flex-col items-center justify-start py-8 open-sans"
+    class="min-w-full min-h-full flex flex-col items-center justify-start py-24 open-sans gap-12"
   >
-    <div
-      class="grid grid-cols-6 w-full max-w-4xl h-min border-neutral-300 mt-4"
-    >
-      <h2
-        class="flex flex-col col-start-1 col-span-full w-full kode-mono pb-2 text-neutral-500"
-      >
-        Current Members
-      </h2>
+    <div class="relative overflow-clip h-48 w-full max-w-4xl">
+      <HeatmapBanner />
     </div>
-    <div class="flex flex-col w-full max-w-4xl pb-48">
-      <div class="grid grid-cols-3 gap-4 mt-8">
+    <div class="w-full max-w-4xl flex flex-col gap-8 px-4">
+      <div
+        class="flex flex-col gap-2 w-full max-w-4xl h-min border-neutral-300 mt-4 border-b border-b-neutral-200 pb-4"
+      >
+        <h1 class="text-4xl eb-garamond">Current Members</h1>
+      </div>
+      <div class="grid grid-cols-3 gap-4">
         <MemberCard
           name="Suriyash Malviya"
-          image="https://placehold.co/96x96"
-          website="#"
-          linkedin="#"
-          github="#"
-        />
-        <MemberCard
-          name="Grace Jin"
-          image="https://placehold.co/96x96"
-          website="#"
-          linkedin="#"
-          github="#"
+          image={suriyashImage.src}
+          website="https://www.suryash.com/"
+          linkedin="https://www.linkedin.com/in/thesuryash/"
+          github="https://github.com/thesuryash"
         />
         <MemberCard
           name="George Margono"
+          image={george.src}
+          linkedin="https://www.linkedin.com/in/georgemargono/"
+        />
+        <MemberCard
+          name="Aishu Rai"
           image="https://placehold.co/96x96"
           website="#"
           linkedin="#"

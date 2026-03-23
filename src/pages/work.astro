@@ -6,22 +6,22 @@ import physicsModelData from "../assets/physicsmodel.obj?raw";
 import spectaclesData from "../assets/spectacles.obj?raw";
 import kirbyData from "../assets/kirby.obj?raw";
 import "../assets/global.css";
+import HeatmapBanner from "../components/HeatmapBanner.astro";
 ---
 
 <Layout>
   <div
-    class="min-w-full min-h-full flex flex-col items-center justify-start py-8 open-sans"
+    class="min-w-full min-h-full flex flex-col items-center justify-start py-24 open-sans gap-12"
   >
-    <div
-      class="grid grid-cols-6 w-full max-w-4xl h-min border-neutral-300 mt-4"
-    >
-      <h2
-        class="flex flex-col col-start-1 col-span-full w-full kode-mono pb-2 text-neutral-500"
-      >
-        Projects
-      </h2>
+    <div class="relative overflow-clip h-48 w-full max-w-4xl">
+      <HeatmapBanner />
     </div>
-    <div class="w-full max-w-4xl">
+    <div class="w-full max-w-4xl flex flex-col gap-8 px-4">
+      <div
+        class="flex flex-col gap-2 w-full max-w-4xl h-min border-neutral-300 mt-4 border-b border-b-neutral-200 pb-4"
+      >
+        <h1 class="text-4xl eb-garamond">All Projects</h1>
+      </div>
       <ProjectSection
         credits={["Suriyash Malviya", "Grace Jin"]}
         client:visible
