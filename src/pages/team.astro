@@ -3,16 +3,6 @@ import Layout from "../layouts/Layout.astro";
 import MemberCard from "../components/MemberCard.astro";
 import HeatmapBanner from "../components/HeatmapBanner.astro";
 import "../assets/global.css";
-import suriyashImage from "../assets/suriyash.png";
-import george from "../assets/george.png";
-import aishu from "../assets/aishu.jpg";
-import ryan from "../assets/ryan.jpg";
-import davey from "../assets/davey.jpg";
-import tamara from "../assets/tamara.jpg";
-import majd from "../assets/majd.jpg";
-import ruth from "../assets/ruth.jpg";
-import sabrina from "../assets/sabrina.jpg";
-import luke from "../assets/luke.jpg";
 ---
 
 <Layout>
@@ -22,74 +12,64 @@ import luke from "../assets/luke.jpg";
     <div class="relative overflow-clip h-48 w-full max-w-4xl">
       <HeatmapBanner />
     </div>
-    <div class="w-full max-w-4xl flex flex-col gap-8 px-4">
-      <div
-        class="flex flex-col gap-2 w-full max-w-4xl h-min border-neutral-300 mt-4 border-b border-b-neutral-200 pb-4"
-      >
+    <div class="flex flex-col w-full max-w-4xl py-8 gap-8">
+      <div class="flex flex-col gap-2 pb-4 border-b border-neutral-200 px-4">
         <h1 class="text-4xl eb-garamond">Current Members</h1>
       </div>
-      <div class="grid grid-cols-3 gap-4">
+      <div class="h-min bg-neutral-50 flex flex-col py-12 px-4">
         <MemberCard
           name="Suriyash Malviya"
-          image={suriyashImage}
           website="https://www.suryash.com/"
           linkedin="https://www.linkedin.com/in/thesuryash/"
           github="https://github.com/thesuryash"
         />
         <MemberCard
           name="George Margono"
-          image={george}
           linkedin="https://www.linkedin.com/in/georgemargono/"
         />
         <MemberCard
           name="Aishu Rai"
-          image={aishu}
           linkedin="https://www.linkedin.com/in/aiswarya-senthil-56a47323b/"
         />
         <MemberCard
           name="Ryan Qiu"
-          image={ryan}
           website="https://ryanwqiu.com"
           github="https://github.com/YottaYocta"
           linkedin="https://www.linkedin.com/in/ryan-qiu-194041297/"
         />
         <MemberCard
           name="David Seeman"
-          image={davey}
           linkedin="https://www.linkedin.com/in/david-seeman/"
         />
-        <MemberCard
-          name="Majd Aldaye"
-          image={majd}
-          linkedin="https://www.linkedin.com/in/majd-aldaye-9358731a5/"
-        />
-        <MemberCard
-          name="Ruth Ogbemudia"
-          image={ruth}
-        />
-        <MemberCard
-          name="Sabrina Liu"
-          image={sabrina}
-          linkedin="https://www.linkedin.com/in/sabrina-liu-a7b311297/"
-        />
+
         <MemberCard
           name="Luke Shao"
-          image={luke}
           linkedin="https://www.linkedin.com/in/luke-shao/"
         />
       </div>
     </div>
-    <div class="w-full max-w-4xl flex flex-col gap-8 px-4">
-      <div
-        class="flex flex-col gap-2 w-full max-w-4xl h-min border-neutral-300 mt-4 border-b border-b-neutral-200 pb-4"
-      >
+    <div class="flex flex-col w-full max-w-4xl py-8 gap-8">
+      <div class="flex flex-col gap-2 pb-4 border-b border-neutral-200 px-4">
         <h2 class="text-4xl eb-garamond">Past Members</h2>
       </div>
-      <div class="grid grid-cols-3 gap-4">
+      <div class="h-min bg-neutral-50 flex flex-col py-12 px-4">
         <MemberCard
           name="Tamara Kasikovic"
-          image={tamara}
           linkedin="https://www.linkedin.com/in/tamara-kas/"
+        />
+        <MemberCard
+          name="Majd Aldaye"
+          linkedin="https://www.linkedin.com/in/majd-aldaye-9358731a5/"
+        />
+        <MemberCard name="Ruth Ogbemudia" />
+        <MemberCard
+          name="Sabrina Liu"
+          linkedin="https://www.linkedin.com/in/sabrina-liu-a7b311297/"
+        />
+        <MemberCard
+          name="Grace Jin"
+          website="https://www.instagram.com/yeygrassssss"
+          linkedin="https://www.linkedin.com/in/grace-jin-cornell/"
         />
       </div>
     </div>

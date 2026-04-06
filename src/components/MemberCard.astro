@@ -1,97 +1,86 @@
 ---
-import { Image } from "astro:assets";
-import type { ImageMetadata } from "astro";
-
 interface Props {
   name: string;
-  image: ImageMetadata | string;
-  imageAlt?: string;
   website?: string;
   linkedin?: string;
   github?: string;
 }
 
-const { name, image, imageAlt = name, website, linkedin, github } = Astro.props;
+const { name, website, linkedin, github } = Astro.props;
 ---
 
-<div class="flex flex-col gap-4 p-2 bg-[#f6f6f6]">
-  {typeof image === "string" ? (
-    <img
-      src={image}
-      alt={imageAlt}
-      class="w-full object-cover border border-neutral-100"
-    />
-  ) : (
-    <Image
-      src={image}
-      alt={imageAlt}
-      class="w-full object-cover border border-neutral-100"
-      layout="full-width"
-    />
-  )}
-  <div class="flex w-full justify-between items-center">
-    <p class="kode-mono text-sm text-neutral-800 text-nowrap">{name}</p>
-    <div class="flex gap-2 w-min">
-      {
-        website && (
-          <a href={website} target="_blank" rel="noopener noreferrer">
-            <button class="button w-8 h-8 p-0 flex items-center justify-center">
-              <svg
-                class="w-4 h-4 text-neutral-500"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-              </svg>
-            </button>
-          </a>
-        )
-      }
-      {
-        linkedin && (
-          <a href={linkedin} target="_blank" rel="noopener noreferrer">
-            <button class="button w-8 h-8 p-0 flex items-center justify-center">
-              <svg
-                class="w-4 h-4 text-neutral-500"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-                <rect x="2" y="9" width="4" height="12" />
-                <circle cx="4" cy="4" r="2" />
-              </svg>
-            </button>
-          </a>
-        )
-      }
-      {
-        github && (
-          <a href={github} target="_blank" rel="noopener noreferrer">
-            <button class="button w-8 h-8 p-0 flex items-center justify-center">
-              <svg
-                class="w-4 h-4 text-neutral-500"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
-              </svg>
-            </button>
-          </a>
-        )
-      }
-    </div>
+<div
+  class="w-full flex justify-between items-center gap-1 border-b border-neutral-200 py-2 px-8"
+>
+  <p>{name}</p>
+  <div class="flex gap-2">
+    {
+      website && (
+        <a href={website} target="_blank" rel="noopener noreferrer">
+          <button class="button w-8 h-8 p-0 flex items-center justify-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="text-neutral-500"
+            >
+              <path d="M9 15l6 -6" />
+              <path d="M11 6l.463 -.536a5 5 0 0 1 7.071 7.072l-.534 .464" />
+              <path d="M13 18l-.397 .534a5.068 5.068 0 0 1 -7.127 0a4.972 4.972 0 0 1 0 -7.071l.524 -.463" />
+            </svg>
+          </button>
+        </a>
+      )
+    }
+    {
+      linkedin && (
+        <a href={linkedin} target="_blank" rel="noopener noreferrer">
+          <button class="button w-8 h-8 p-0 flex items-center justify-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="text-neutral-500"
+            >
+              <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" />
+              <path d="M8 11l0 5" />
+              <path d="M8 8l0 .01" />
+              <path d="M12 16l0 -5" />
+              <path d="M16 16v-3a2 2 0 0 0 -4 0" />
+            </svg>
+          </button>
+        </a>
+      )
+    }
+    {
+      github && (
+        <a href={github} target="_blank" rel="noopener noreferrer">
+          <button class="button w-8 h-8 p-0 flex items-center justify-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              class="text-neutral-500"
+            >
+              <path d="M5.315 2.1c.791 -.113 1.9 .145 3.333 .966l.272 .161l.16 .1l.397 -.083a13.3 13.3 0 0 1 4.59 -.08l.456 .08l.396 .083l.161 -.1c1.385 -.84 2.487 -1.17 3.322 -1.148l.164 .008l.147 .017l.076 .014l.05 .011l.144 .047a1 1 0 0 1 .53 .514a5.2 5.2 0 0 1 .397 2.91l-.047 .267l-.046 .196l.123 .163c.574 .795 .93 1.728 1.03 2.707l.023 .295l.007 .272c0 3.855 -1.659 5.883 -4.644 6.68l-.245 .061l-.132 .029l.014 .161l.008 .157l.004 .365l-.002 .213l-.003 3.834a1 1 0 0 1 -.883 .993l-.117 .007h-6a1 1 0 0 1 -.993 -.883l-.007 -.117v-.734c-1.818 .26 -3.03 -.424 -4.11 -1.878l-.535 -.766c-.28 -.396 -.455 -.579 -.589 -.644l-.048 -.019a1 1 0 0 1 .564 -1.918c.642 .188 1.074 .568 1.57 1.239l.538 .769c.76 1.079 1.36 1.459 2.609 1.191l.001 -.678l-.018 -.168a5.03 5.03 0 0 1 -.021 -.824l.017 -.185l.019 -.12l-.108 -.024c-2.976 -.71 -4.703 -2.573 -4.875 -6.139l-.01 -.31l-.004 -.292a5.6 5.6 0 0 1 .908 -3.051l.152 -.222l.122 -.163l-.045 -.196a5.2 5.2 0 0 1 .145 -2.642l.1 -.282l.106 -.253a1 1 0 0 1 .529 -.514l.144 -.047l.154 -.03z" />
+            </svg>
+          </button>
+        </a>
+      )
+    }
   </div>
 </div>
