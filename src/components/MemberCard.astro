@@ -1,7 +1,10 @@
 ---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
 interface Props {
   name: string;
-  image: string;
+  image: ImageMetadata | string;
   imageAlt?: string;
   website?: string;
   linkedin?: string;
@@ -12,11 +15,20 @@ const { name, image, imageAlt = name, website, linkedin, github } = Astro.props;
 ---
 
 <div class="flex flex-col gap-4 p-2 bg-[#f6f6f6]">
-  <img
-    src={image}
-    alt={imageAlt}
-    class="w-full object-cover border border-neutral-100"
-  />
+  {typeof image === "string" ? (
+    <img
+      src={image}
+      alt={imageAlt}
+      class="w-full object-cover border border-neutral-100"
+    />
+  ) : (
+    <Image
+      src={image}
+      alt={imageAlt}
+      class="w-full object-cover border border-neutral-100"
+      layout="full-width"
+    />
+  )}
   <div class="flex w-full justify-between items-center">
     <p class="kode-mono text-sm text-neutral-800 text-nowrap">{name}</p>
     <div class="flex gap-2 w-min">
