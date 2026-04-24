@@ -22,9 +22,9 @@ export const Nav = () => {
   };
 
   return (
-    <nav className="sticky top-0 z-50 w-full bg-white border-b border-neutral-200 flex justify-center">
+    <nav className="sticky top-0 z-50 w-full bg-white border-b border-neutral-200 flex justify-center px-4">
       <div className="flex justify-between w-full max-w-4xl h-min py-2">
-        <div className="flex flex-col col-start-1 col-span-2 row-start-1">
+        <div className="flex flex-col">
           <a
             href="/"
             className="eb-garamond text-lg text-neutral-900 hover:text-red-700 transition-colors"
@@ -32,22 +32,20 @@ export const Nav = () => {
             CTL
           </a>
         </div>
-        <div className="flex flex-col col-start-3 col-span-4 row-start-1 justify-center">
-          <div className="flex justify-start items-center gap-8 pl-6">
-            {links.map(({ label, href }) => (
-              <a
-                key={href}
-                href={href}
-                className={`kode-mono text-sm transition-colors ${
-                  isActive(href)
-                    ? "text-neutral-900"
-                    : "text-neutral-400 hover:text-neutral-900"
-                }`}
-              >
-                {label}
-              </a>
-            ))}
-          </div>
+        <div className="flex justify-start items-center gap-8 pl-6">
+          {links.map(({ label, href }) => (
+            <a
+              key={href}
+              href={href}
+              className={`kode-mono text-sm transition-colors ${
+                isActive(href)
+                  ? "text-neutral-900"
+                  : "text-neutral-400 hover:text-neutral-900"
+              }`}
+            >
+              {label}
+            </a>
+          ))}
         </div>
       </div>
     </nav>

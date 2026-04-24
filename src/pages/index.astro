@@ -11,7 +11,7 @@ import "../assets/global.css";
 
 <Layout>
   <div
-    class="min-w-full min-h-full flex flex-col items-center justify-start py-8 open-sans gap-24"
+    class="min-w-full min-h-full flex flex-col items-center justify-start py-8 open-sans gap-24 px-4 max-w-screen overflow-hidden"
   >
     <div class="flex flex-col gap-16 w-full max-w-4xl my-16">
       <div class="relative overflow-clip h-48">
@@ -28,7 +28,7 @@ import "../assets/global.css";
             <span class="italic opacity-50">@ Cornell</span>
           </div>
         </div>
-        <div class="flex gap-9">
+        <div class="flex gap-9 flex-col sm:flex-row">
           <p class="leading-7 text-neutral-500 w-full">
             We build exploratory projects that push the boundaries of Artificial
             Intelligence, Digital Storytelling, and Extended Reality. Student
@@ -41,12 +41,13 @@ import "../assets/global.css";
           </p>
         </div>
       </div>
-      <div class="flex gap-4 mt-8 px-4">
+      <div class="flex gap-6 mt-8 px-4 flex-col sm:flex-row sm:gap-4">
         <button
-          class="button bg-blue-700 border-blue-400 hover:bg-blue-600 text-white kode-mono w-min text-nowrap"
+          class="button bg-blue-700 border-blue-400 hover:bg-blue-600 text-white kode-mono w-full sm:w-min text-nowrap h-12"
           >Apply for Student Role</button
         >
-        <button class="button kode-mono w-min text-nowrap border-neutral-300"
+        <button
+          class="button kode-mono w-full sm:w-min text-nowrap border-neutral-300 h-12"
           >Faculty Collaboration</button
         >
       </div>
@@ -94,9 +95,12 @@ import "../assets/global.css";
     </div>
 
     <div class="flex flex-col w-full max-w-4xl py-16 pb-48 gap-8">
-      <h3 class="text-3xl eb-garamond text-neutral-800">
-        Let's build something amazing together
-      </h3>
+      <div class="flex flex-col gap-2 pb-4 border-b border-neutral-200 px-4">
+        <h2 class="text-2xl eb-garamond">
+          Let's Build Something Amazing Together
+        </h2>
+      </div>
+
       <div class="h-min bg-neutral-50 flex flex-col py-12 px-4">
         <p class="px-8 pb-4">Reach out to us at:</p>
         <ul>
